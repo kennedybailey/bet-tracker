@@ -1,0 +1,18 @@
+h1 {
+  text-align: center;
+  color: #4a7aef;
+  margin: 30px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+}
+
+.container-md {
+  display: block;
+  margin: auto;
+  margin-top: 15px;
+  border: solid 2px #4a7aef;
+  border-radius: 3px;
+}

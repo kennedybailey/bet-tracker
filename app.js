@@ -190,27 +190,39 @@ bet = {
         'gameStatus': 'pregame'
     }
 }
-
-function getRealStats(url){
-    let request = new XMLHttpRequest();
-    request.open("GET", "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022200759.json")
-    request.send();
-    request.onload = () => {
-        if (request.status === 200) {
-           return JSON.parse(request.response);
+let games = {}
+function getRealStats(){
+    try{
+        for(let i = 0; i < games.length; i++){
+            let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022200759.json`
+            axios.get(url).then(updateStats)
         }
-        else {
-            console.log(`error ${request.status} ${request.statusText}`)
-        }
+    } catch(err){
+        
     }
 }
 
-function logScoreboard(){
-
+function logScoreboard(response){
+    games = response.data.scoreboard.games
+    console.log('Games Today:')
+    for(let i = 0; i < games.length; i++){
+        console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
+    }
 }
 
-function udpateStats(){
-
+function updateStats(response){
+    awayTeam = response.data.game.awayTeam.players
+    updatePlayers(awayTeam)
+    homeTeam = response.data.game.homeTeam.players
+    updatePlayers(homeTeam)
 }
 
-setInterval(updateStats, 2000)
+function updatePlayers(players){
+    for(let i = 0; i < players.length; i++){
+        
+    }
+}
+
+url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
+axios.get(url).then(logScoreboard)
+setInterval(getRealStats, 2000)

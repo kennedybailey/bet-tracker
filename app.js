@@ -1,212 +1,7 @@
-bet = [{
-        'name': 'LeBron James',
-        'bets': {
-            'points': {
-                'minValue': 25,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Jrue Holiday',
-        'bets': {
-            'reboundsTotal': {
-                'minValue': 4,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Kawhi Leonard',
-        'bets': {
-            'threePointersMade': {
-                'minValue': 2,
-                'curr': 0
-            },
-            'points': {
-                'minValue': 20,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Michael Porter Jr.',
-        'bets': {
-            'reboundsTotal': {
-                'minValue': 4,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Darius Garland',
-        'bets': {
-            'points': {
-                'minValue': 15,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Evan Mobley',
-        'bets': {
-            'reboundsTotal': {
-                'minValue': 6,
-                'curr': 0
-            },
-            'points': {
-                'minValue': 10,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'RJ Barrett',
-        'bets': {
-            'points': {
-                'minValue': 15,
-                'curr': 0
-            },
-            'reboundsTotal': {
-                'minValue': 4,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Paul George',
-        'bets': {
-            'points': {
-                'minValue': 20,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Jalen Brunson',
-        'bets': {
-            'assists': {
-                'minValue': 4,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'DeMar DeRozan',
-        'bets': {
-            'points': {
-                'minValue': 20,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Jonas Valanciunas',
-        'bets': {
-            'points': {
-                'minValue': 10,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'CJ McCollum',
-        'bets': {
-            'points': {
-                'minValue': 15,
-                'curr': 0
-            },
-            'assists': {
-                'minValue': 4,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Nikola Jokic',
-        'bets': {
-            'assists': {
-                'minValue': 8,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Jarrett Allen',
-        'bets': {
-            'points': {
-                'minValue': 10,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Mason Plumlee',
-        'bets': {
-            'reboundsTotal': {
-                'minValue': 6,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'LaMelo Ball',
-        'bets': {
-            'assists': {
-                'minValue': 6,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Terry Rozier',
-        'bets': {
-            'points': {
-                'minValue': 15,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Brandon Ingram',
-        'bets': {
-            'threePointersMade': {
-                'minValue': 1.5,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Nikola Vucevic',
-        'bets': {
-            'PRA': {
-                'minValue': 32.5,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
-    }
-]
+bets = []
 let games = {}
 
+const cors = "https://cors-anywhere.herokuapp.com/"
 //Functions
 function getRealStats(){
     for(let i = 0; i < games.length; i++){
@@ -243,34 +38,36 @@ function updateStats(response){
 
 function updatePlayers(box, players){
     for(let i = 0; i < players.length; i++){
-        for(let j = 0; j < bet.length; j++){
-            if(players[i].name === bet[j].name && bet[j].gameStatus !== 'Final'){
-                if(box.gameStatusText !== 'pregame' && bet[j].gameStatus === 'pregame'){
-                    bet[j].gameStatus = 'Started'
-                    console.log(`${bet[j].name} has started their game.`)
-                }
-                else if (box.gameStatusText === 'Final' && bet[j].gameStatus !== 'Final'){
-                    bet[j].gameStatus = 'Final'
-                    let betCount = Object.keys(bet[j].bets)
-                    for(let k = 0; k < betCount.length; k++){
-                        console.log(`${bet[j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
-                        updateMsg(`${bet[j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+        for(let b = 0; b < bets.lengh; b++){
+            for(let j = 0; j < bet[b].length; j++){
+                if(players[i].name === bet[b][j].name && bet[b][j].gameStatus !== 'Final'){
+                    if(box.gameStatusText !== 'pregame' && bet[b][j].gameStatus === 'pregame'){
+                        bet[b][j].gameStatus = 'Started'
+                        console.log(`${bet[b][j].name} has started their game.`)
                     }
-                }
-                else if (bet[j].gameStatus !== 'pregame'){
-                    let betCount = Object.keys(bet[j].bets)
-                    for(let k = 0; k < betCount.length; k++){
-                        let liveStat = 0
-                        if(betCount[k] === 'PRA'){
-                            liveStat = players[i].statistics.points + players[i].statistics.reboundsTotal + players[i].statistics.assists
+                    else if (box.gameStatusText === 'Final' && bet[b][j].gameStatus !== 'Final'){
+                        bet[b][j].gameStatus = 'Final'
+                        let betCount = Object.keys(bet[b][j].bets)
+                        for(let k = 0; k < betCount.length; k++){
+                            console.log(`${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                            updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
                         }
-                        else{
-                            liveStat = players[i].statistics[betCount[k]]
-                        }
-                        if(liveStat !== bet[j].bets[betCount[k]].curr){
-                            let msg = `${bet[j].name} has ${liveStat}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                            updateMsg(`${bet[j].name.replace(" ", "-")}-${betCount[k]}`, msg)
-                            bet[j].bets[betCount[k]].curr = liveStat
+                    }
+                    else if (bet[b][j].gameStatus !== 'pregame'){
+                        let betCount = Object.keys(bet[b][j].bets)
+                        for(let k = 0; k < betCount.length; k++){
+                            let liveStat = 0
+                            if(betCount[k] === 'PRA'){
+                                liveStat = players[i].statistics.points + players[i].statistics.reboundsTotal + players[i].statistics.assists
+                            }
+                            else{
+                                liveStat = players[i].statistics[betCount[k]]
+                            }
+                            if(liveStat !== bet[b][j].bets[betCount[k]].curr){
+                                let msg = `${bet[b][j].name} has ${liveStat}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`
+                                updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, msg)
+                                bet[b][j].bets[betCount[k]].curr = liveStat
+                            }
                         }
                     }
                 }
@@ -289,8 +86,7 @@ function updateMsg(id, msg){
         createElement.id = id
         createElement.style = "color:white"
         document.body.appendChild(createElement)
-    }
-    
+    }  
 }
 
 function addLegForm(){
@@ -299,7 +95,7 @@ function addLegForm(){
     let newId = parseInt(child[child.length-1].id.substring(child[child.length-1].id.indexOf('-')+1,child[child.length-1].id.length)) + 1
     let newLeg = child[child.length-1].cloneNode(true)
     newLeg.id = "leg-"+newId
-    
+
     let inputs = newLeg.querySelectorAll("input,select")
     for(let i = 0; i < inputs.length; i++){
         let newElementID = inputs[i].id.substring(0,inputs[i].id.lastIndexOf('-')+1)
@@ -326,6 +122,32 @@ function addLegForm(){
 let addLeg = document.getElementById("addLeg")
 addLeg.addEventListener("click", addLegForm)
 
+function addBetToHtml(){
+    let legs = document.querySelector('#legContainer').querySelectorAll(':scope > div')
+    let bet = []
+    for(let i = 0; i < legs.length; i++){
+        let name = legs[i].querySelector('#player-name-'+i).value
+        let json = {
+            "name": name,
+            "bets": {},
+            "gameStatus": "pregame"
+        }
+        let checkboxes = legs[i].querySelectorAll("input[type=checkbox]")
+        for(let c = 0; c < checkboxes.length; c++){
+            if(checkboxes[c].checked){
+                let betName = checkboxes[c].name
+                let betMinValue = checkboxes[c].parentElement.parentElement.querySelector("input[type=number]").value
+                let betValue = {"minValue": betMinValue, "curr": 0}
+                json.bets[betName] = betValue
+            }
+        }
+        bet.push(json)
+    }
+    bets.push(bet)
+}
+let addBet = document.getElementById("addBet")
+addBet.addEventListener("click", addBetToHtml)
+
 url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
-axios.get(url).then(logScoreboard)
+axios.get(`${cors}${url}`).then(logScoreboard)
 setInterval(getRealStats, 2000)

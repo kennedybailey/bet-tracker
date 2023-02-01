@@ -300,28 +300,28 @@ function addLegForm(){
     let newLeg = child[child.length-1].cloneNode(true)
     newLeg.id = "leg-"+newId
     
-    let children = newLeg.children
-    for(let c1 = 0; c1 < children.length; c1++){
-        for(let c2 = 0; c2 < children[c1].children.length; c2++){
-            for(let c3 = 0; c3 < children[c1].children[c2].children.length; c3++){
-                let currElement = children[c1].children[c2].children[c3]
-                if(currElement.id !== ""){
-                    let newElementID = currElement.id.substring(0,currElement.id.lastIndexOf('-')+1)
-                    currElement.id = newElementID + (parseInt(currElement.id.substring(currElement.id.lastIndexOf('-')+1,currElement.id.length)) + 1)
-                }
-                else if(currElement.getAttribute("for") !== ""){
-                    let forValue = currElement.getAttribute("for")
-                    let newElementID = forValue.substring(0,forValue.lastIndexOf('-')+1)
-                    let newFor = newElementID + (parseInt(forValue.substring(forValue.lastIndexOf('-')+1,forValue.length)) + 1)
-                    currElement.setAttribute("for", newFor) 
-                }
-            }
+    let inputs = newLeg.querySelectorAll("input,select")
+    for(let i = 0; i < inputs.length; i++){
+        let newElementID = inputs[i].id.substring(0,inputs[i].id.lastIndexOf('-')+1)
+        newLeg.querySelector(`#${inputs[i].id}`).setAttribute("id", newElementID + (parseInt(inputs[i].id.substring(inputs[i].id.lastIndexOf('-')+1,inputs[i].id.length)) + 1))
+        if (newLeg.querySelector(`#${inputs[i].id}`).type === 'checkbox'){
+            newLeg.querySelector(`#${inputs[i].id}`).checked = false
         }
+        else if (newLeg.querySelector(`#${inputs[i].id}`).tagName === 'SELECT'){
+            newLeg.querySelector(`#${inputs[i].id}`).value = 'default'
+        } else{
+            newLeg.querySelector(`#${inputs[i].id}`).value = ''
+        }
+    }
+    let fors = newLeg.querySelectorAll("label")
+    for(let f = 0; f < fors.length; f++){
+        let forValue = newLeg.querySelectorAll("label")[f].getAttribute("for")
+        let newElementID = forValue.substring(0,forValue.lastIndexOf('-')+1)
+        let newFor = newElementID + (parseInt(forValue.substring(forValue.lastIndexOf('-')+1,forValue.length)) + 1)
+        newLeg.querySelectorAll("label")[f].setAttribute("for", newFor)
     }
     legElement.appendChild(document.createElement('hr'))
     legElement.appendChild(newLeg)
-
-
 }
 let addLeg = document.getElementById("addLeg")
 addLeg.addEventListener("click", addLegForm)

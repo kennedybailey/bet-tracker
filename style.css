@@ -10,7 +10,11 @@
 }
 
 body {
-  background-color: #272727;
+  background-color: #2f2c2c;
+}
+
+.navbar {
+  background-color: #272727 !important;
 }
 
 .navbarInfo {

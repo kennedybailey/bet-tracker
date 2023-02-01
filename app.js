@@ -14,7 +14,7 @@ function getRealStats(){
         if(gameTime <= currentTime){
 
             let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
-            axios.get(url).then(updateStats)
+            axios.get(`${cors}${url}`).then(updateStats)
         }
     }
 }

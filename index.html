@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;600&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -54,8 +54,8 @@
     </nav>
 
     <div class="row betContainerStyle">
-      <div class="col-md-5">
-        <div class="col-md-5"><h1 class="homeTitles">Create a bet</h1></div>
+      <div class="col-md-4">
+        <div class="col-md-6"><h1 class="homeTitles">Create A Bet</h1></div>
         <div class="container-md infoBox" id="betContainer">
           <div id="legContainer">
             <div id="leg-0">
@@ -63,7 +63,7 @@
                 <div class="col-md-6">
                   <input
                     type="text"
-                    class="form-control"
+                    class="form-control formPlayerName"
                     id="player-name-0"
                     placeholder="Player name..."
                   />
@@ -72,16 +72,20 @@
                   <label class="visually-hidden" for="player-name-0"
                     >Preference</label
                   >
-                  <select class="form-select" id="sport-select-0">
+                  <select
+                    class="form-select formSportDropdown"
+                    id="sport-select-0"
+                  >
                     <option selected>Sport</option>
                     <option value="1">Basketball</option>
                   </select>
                 </div>
               </div>
+              <br />
               <div class="row">
                 <div class="form-check col-md-6">
                   <input
-                    class="form-check-input"
+                    class="form-check-input formCheckbox"
                     type="checkbox"
                     value=""
                     id="pts-chx-0"
@@ -90,14 +94,14 @@
                     Points
                   </label>
                 </div>
-                <div class="col-md-6">
-                  <input type="number" id="pts-num-0" />
+                <div class="col-sm-6">
+                  <input type="number" class="betStatNumber" id="pts-num-0" />
                 </div>
               </div>
               <div class="row">
                 <div class="form-check col-md-6">
                   <input
-                    class="form-check-input"
+                    class="form-check-input formCheckbox"
                     type="checkbox"
                     value=""
                     id="asts-chx-0"
@@ -106,14 +110,14 @@
                     Assists
                   </label>
                 </div>
-                <div class="col-md-6">
-                  <input type="number" id="asts-num-0" />
+                <div class="col-sm-6">
+                  <input type="number" class="betStatNumber" id="asts-num-0" />
                 </div>
               </div>
               <div class="row">
                 <div class="form-check col-md-6">
                   <input
-                    class="form-check-input"
+                    class="form-check-input formCheckbox"
                     type="checkbox"
                     value=""
                     id="rbs-chx-0"
@@ -122,14 +126,14 @@
                     Rebounds
                   </label>
                 </div>
-                <div class="col-md-6">
-                  <input type="number" id="rbs-num-0" />
+                <div class="col-sm-6">
+                  <input type="number" class="betStatNumber" id="rbs-num-0" />
                 </div>
               </div>
               <div class="row">
                 <div class="form-check col-md-6">
                   <input
-                    class="form-check-input"
+                    class="form-check-input formCheckbox"
                     type="checkbox"
                     value=""
                     id="pra-chx-0"
@@ -138,14 +142,14 @@
                     PRA
                   </label>
                 </div>
-                <div class="col-md-6">
-                  <input type="number" id="pra-num-0" />
+                <div class="col-sm-6">
+                  <input type="number" class="betStatNumber" id="pra-num-0" />
                 </div>
               </div>
               <div class="row">
                 <div class="form-check col-md-6">
                   <input
-                    class="form-check-input"
+                    class="form-check-input formCheckbox"
                     type="checkbox"
                     value=""
                     id="3-pt-chx-0"
@@ -154,13 +158,14 @@
                     3-Pointers
                   </label>
                 </div>
-                <div class="col-md-6">
-                  <input type="number" id="3-pt-num-0" />
+                <div class="col-sm-6">
+                  <input type="number" class="betStatNumber" id="3-pt-num-0" />
                 </div>
               </div>
             </div>
           </div>
-          <div class="row legButton">
+          <hr />
+          <div class="row legButton addLegStyle">
             <input
               type="submit"
               id="addLeg"
@@ -168,44 +173,42 @@
               value="Add a Leg"
             />
           </div>
-          <div class="row">
+
+          <div class="row createBetStyle">
             <button class="btn btn-success" type="submit">Create Bet</button>
           </div>
         </div>
       </div>
       <div class="col-md-5">
-        <div class="col-md-5"><h1 class="homeTitles">My Bets</h1></div>
+        <div class="col-md-6"><h1 class="homeTitles">My Bets</h1></div>
         <div class="container-md infoBox">
           <div class="row"><h4 class="whichBet">Bet 1</h4></div>
           <div class="row">
-            <div class="col-sm-6 game">Game Info vs.</div>
-            <div class="col-sm-6 game">Game time</div>
+            <div class="col-sm-6 game">TOR vs UTA</div>
+            <div class="col-sm-6 game">Q1 7min 23s</div>
           </div>
 
           <div class="row">
-            <div class="col-md-4 info">Player</div>
+            <div class="col-md-4 info">Mike Conley</div>
             <div class="col-md-4 DataTypes">
-              <div class="row">data</div>
-              <div class="row">data</div>
-              <div class="row">data</div>
+              <div class="row">Points</div>
+              <div class="row">3-Pointers</div>
+              <div class="row">Rebounds</div>
             </div>
             <div class="col-md-4 info">
               <div class="row">0/10</div>
-              <div class="row">0/10</div>
-              <div class="row">0/10</div>
+              <div class="row">0/6</div>
+              <div class="row">0/4</div>
             </div>
           </div>
-          <hr />
+          <br />
           <div class="row">
-            <div class="col-md-4 info">Player</div>
+            <div class="col-md-4 info">Fred VanVleet</div>
             <div class="col-md-4 DataTypes">
-              <div class="row">data</div>
-              <div class="row">data</div>
-              <div class="row">data</div>
+              <div class="row">PRA</div>
             </div>
             <div class="col-md-4 info">
-              <div class="row">0/10</div>
-              <div class="row">0/10</div>
+              <div class="row">0/20</div>
               <div class="row">0/10</div>
             </div>
           </div>

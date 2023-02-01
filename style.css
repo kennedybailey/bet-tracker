@@ -75,8 +75,14 @@ hr {
   padding: 1%;
 }
 
-h2 {
-  margin-top: 2%;
+.faqContainer {
+  display: flex;
+  justify-content: center;
+}
+.faqAccordion {
+  background-color: #272727 !important;
+}
+.question {
   text-align: center;
   font-family: "cherrybomb", Arial, sans-serif;
   color: var(--primaryColor);

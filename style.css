@@ -23,9 +23,20 @@ body {
   font-size: 45px;
 }
 
+.navbarLink {
+  color: var(--text-color);
+}
+
+.navbarLink:hover {
+  color: var(--primaryColor);
+}
 .form {
   display: flex;
   justify-content: center;
+}
+
+.betStat {
+  color: var(--text-color);
 }
 
 .container-md {

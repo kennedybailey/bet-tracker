@@ -78,14 +78,18 @@ hr {
 .faqContainer {
   display: flex;
   justify-content: center;
+
+  margin-top: 30px;
 }
 .faqAccordion {
   background-color: #272727 !important;
+  border-radius: 5px;
 }
 .question {
   text-align: center;
   font-family: "cherrybomb", Arial, sans-serif;
   color: var(--primaryColor);
+  font-size: 35px;
 }
 
 .answer {

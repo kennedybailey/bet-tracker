@@ -293,14 +293,39 @@ function updateMsg(id, msg){
     
 }
 
-function addLegForm(addLeg){
+function addLegForm(){
     let legElement = document.getElementById("legContainer");
-    let children = legElement.children
-    //legElement.appendChild(document.createElement("hr"))
-    //TODO:: Need to change the ID's and append the new div's to another
+    let child = legElement.children
+    let newId = parseInt(child[child.length-1].id.substring(child[child.length-1].id.indexOf('-')+1,child[child.length-1].id.length)) + 1
+    let newLeg = child[child.length-1].cloneNode(true)
+    newLeg.id = "leg-"+newId
+    
+    let children = newLeg.children
+    for(let c1 = 0; c1 < children.length; c1++){
+        for(let c2 = 0; c2 < children[c1].children.length; c2++){
+            for(let c3 = 0; c3 < children[c1].children[c2].children.length; c3++){
+                let currElement = children[c1].children[c2].children[c3]
+                if(currElement.id !== ""){
+                    let newElementID = currElement.id.substring(0,currElement.id.lastIndexOf('-')+1)
+                    currElement.id = newElementID + (parseInt(currElement.id.substring(currElement.id.lastIndexOf('-')+1,currElement.id.length)) + 1)
+                }
+                else if(currElement.getAttribute("for") !== ""){
+                    let forValue = currElement.getAttribute("for")
+                    let newElementID = forValue.substring(0,forValue.lastIndexOf('-')+1)
+                    let newFor = newElementID + (parseInt(forValue.substring(forValue.lastIndexOf('-')+1,forValue.length)) + 1)
+                    currElement.setAttribute("for", newFor) 
+                }
+            }
+        }
+    }
+    legElement.appendChild(document.createElement('hr'))
+    legElement.appendChild(newLeg)
+
+
 }
 let addLeg = document.getElementById("addLeg")
-document.addEventListener("click", addLegForm)
+addLeg.addEventListener("click", addLegForm)
+
 url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
 axios.get(url).then(logScoreboard)
 setInterval(getRealStats, 2000)

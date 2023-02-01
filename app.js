@@ -212,11 +212,12 @@ function getRealStats(){
     for(let i = 0; i < games.length; i++){
         let gameTime = new Date(games[i].gameTimeUTC).getTime()
         let currentTime = new Date().getTime()
+        let gameClock = games[i].gameClock
+        let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
+        let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
+        //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
         if(gameTime <= currentTime){
-            let gameClock = games[i].gameClock
-            let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
-            let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
-            //console.log(`${games[i].period}Q ${minutes}:${seconds}`)
+
             let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
             axios.get(url).then(updateStats)
         }

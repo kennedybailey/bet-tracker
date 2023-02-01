@@ -187,6 +187,26 @@ bet = [{
             }
         },
         'gameStatus': 'pregame'
+    },
+    {
+        'name': 'Brandon Ingram',
+        'bets': {
+            'threePointersMade': {
+                'minValue': 1.5,
+                'curr': 0
+            }
+        },
+        'gameStatus': 'pregame'
+    },
+    {
+        'name': 'Nikola Vucevic',
+        'bets': {
+            'PRA': {
+                'minValue': 32.5,
+                'curr': 0
+            }
+        },
+        'gameStatus': 'pregame'
     }
 ]
 let games = {}

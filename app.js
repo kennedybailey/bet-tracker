@@ -1,7 +1,7 @@
 bets = []
 let games = {}
-
 const cors = "https://cors-anywhere.herokuapp.com/"
+
 //Functions
 function getRealStats(){
     for(let i = 0; i < games.length; i++){
@@ -12,7 +12,6 @@ function getRealStats(){
         let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
         //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
         if(gameTime <= currentTime){
-
             let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
             axios.get(`${cors}${url}`).then(updateStats)
         }
@@ -75,7 +74,7 @@ function updatePlayers(box, players){
         }
     }
 }
-
+//TEMP FUNCTION
 function updateMsg(id, msg){
     let element = document.getElementById(id)
     if(element){
@@ -89,7 +88,9 @@ function updateMsg(id, msg){
     }  
 }
 
+//Event Listener
 function addLegForm(){
+    console.log('adding leg')
     let legElement = document.getElementById("legContainer");
     let child = legElement.children
     let newId = parseInt(child[child.length-1].id.substring(child[child.length-1].id.indexOf('-')+1,child[child.length-1].id.length)) + 1
@@ -122,6 +123,7 @@ function addLegForm(){
 let addLeg = document.getElementById("addLeg")
 addLeg.addEventListener("click", addLegForm)
 
+let defaultLegs = document.getElementById('betContainer').innerHTML
 function addBetToHtml(){
     let legs = document.querySelector('#legContainer').querySelectorAll(':scope > div')
     let bet = []
@@ -144,10 +146,14 @@ function addBetToHtml(){
         bet.push(json)
     }
     bets.push(bet)
+    document.querySelector('#betContainer').innerHTML = defaultLegs
+    document.getElementById("addLeg").addEventListener("click", addLegForm)
+    document.getElementById("addBet").addEventListener("click", addBetToHtml)
 }
 let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml)
 
+//default behaviour
 url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
 axios.get(`${cors}${url}`).then(logScoreboard)
 setInterval(getRealStats, 2000)

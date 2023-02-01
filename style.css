@@ -56,6 +56,10 @@ body {
   justify-content: center;
 }
 
+.whichBet {
+  color: var(--primaryColor);
+  font-style: italic;
+}
 .betStat {
   color: var(--text-color);
 }
@@ -63,12 +67,16 @@ body {
 .DataTypes {
   color: var(--text-color);
 }
-.Info {
+.info {
   color: var(--text-color);
 }
 
 hr {
   color: var(--text-color);
+}
+
+.endBet {
+  border: 2px solid var(--primaryColor);
 }
 .game {
   color: var(--text-color);

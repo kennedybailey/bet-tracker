@@ -293,6 +293,14 @@ function updateMsg(id, msg){
     
 }
 
+function addLegForm(addLeg){
+    let legElement = document.getElementById("legContainer");
+    let children = legElement.children
+    //legElement.appendChild(document.createElement("hr"))
+    //TODO:: Need to change the ID's and append the new div's to another
+}
+let addLeg = document.getElementById("addLeg")
+document.addEventListener("click", addLegForm)
 url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
 axios.get(url).then(logScoreboard)
 setInterval(getRealStats, 2000)

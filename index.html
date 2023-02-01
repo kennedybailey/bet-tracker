@@ -56,118 +56,120 @@
     <div class="row">
       <div class="col-md-6">
         <div class="container-md" id="betContainer">
-          <div class="row">
-            <div class="col-md-6">
-              <input
-                type="text"
-                class="form-control"
-                id="specificSizeInputName"
-                placeholder="Player name..."
-              />
-            </div>
-            <div class="col-md-4">
-              <label class="visually-hidden" for="autoSizingSelect"
-                >Preference</label
-              >
-              <select class="form-select" id="autoSizingSelect">
-                <option selected>Sport</option>
-                <option value="1">Basketball</option>
-              </select>
+          <div id="legContainer">
+            <div id="leg-1">
+              <div class="row">
+                <div class="col-md-6">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="specificSizeInputName"
+                    placeholder="Player name..."
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="visually-hidden" for="autoSizingSelect"
+                    >Preference</label
+                  >
+                  <select class="form-select" id="autoSizingSelect">
+                    <option selected>Sport</option>
+                    <option value="1">Basketball</option>
+                  </select>
+                </div>
+              </div>
+                <div class="row">
+                  <div class="form-check col-md-6">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="pts-chx-1"
+                    />
+                    <label class="form-check-label betStat" for="flexCheckDefault">
+                      Points
+                    </label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="number" id="pts-chx-1"/>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="form-check col-md-6">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="asts-chx-1"
+                  />
+                  <label class="form-check-label betStat" for="flexCheckDefault">
+                    Assists
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" id="asts-chx-1"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-check col-md-6">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="rbs-chx-1"
+                  />
+                  <label class="form-check-label betStat" for="flexCheckDefault">
+                    Rebounds
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" id="rbs-chx-1"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-check col-md-6">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="pra-chx-1"
+                  />
+                  <label class="form-check-label betStat" for="flexCheckDefault">
+                    PRA
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" id="pra-chx-1"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-check col-md-6">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="3-pt-chx-1"
+                  />
+                  <label class="form-check-label betStat" for="flexCheckDefault">
+                    3-Pointers
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" id="3-pt-num-1" />
+                </div>
+              </div>
             </div>
           </div>
-            <div class="row">
-              <div class="form-check col-md-6">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label betStat" for="flexCheckDefault">
-                  Points
-                </label>
-              </div>
-              <div class="col-md-6">
-                <input type="number" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-check col-md-6">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label betStat" for="flexCheckDefault">
-                  Assists
-                </label>
-              </div>
-              <div class="col-md-6">
-                <input type="number" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-check col-md-6">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label betStat" for="flexCheckDefault">
-                  Rebounds
-                </label>
-              </div>
-              <div class="col-md-6">
-                <input type="number" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-check col-md-6">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label betStat" for="flexCheckDefault">
-                  PRA
-                </label>
-              </div>
-              <div class="col-md-6">
-                <input type="number" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-check col-md-6">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-check-label betStat" for="flexCheckDefault">
-                  3-Pointers
-                </label>
-              </div>
-
-              <div class="col-md-6">
-                <input type="number" />
-              </div>
-              <div class="row legButton">
-              <input 
-                type="submit" 
-                id="submit-form"
-                class="btn btn-outline-success"
-                value="Add a Leg"
-              />
-              </div>
-            </div>
+          <div class="row legButton">
+            <input 
+              type="submit" 
+              id="addLeg"
+              class="btn btn-outline-success"
+              value="Add a Leg"
+            />
+          </div>
           <div class="row">
             <button class="btn btn-success" type="submit">Create Bet</button>
           </div>
-        
         </div>
       </div>
       <div class="col-md-6">

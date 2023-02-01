@@ -48,10 +48,6 @@ bet = [{
             'points': {
                 'minValue': 20,
                 'curr': 0
-            },
-            'points': {
-                'minValue': 15,
-                'curr': 0
             }
         },
         'gameStatus': 'pregame'
@@ -266,7 +262,19 @@ function updatePlayers(box, players){
                             liveStat = players[i].statistics[betCount[k]]
                         }
                         if(liveStat !== bet[j].bets[betCount[k]].curr){
-                            console.log(`${bet[j].name} has ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                            let msg = `${bet[j].name} has ${liveStat}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`
+                            console.log(msg)
+                            let id = `${bet[j].name.replace(" ", "-")}-${betCount[k]}`
+                            let element = document.getElementById(id)
+                            if(element){
+                                element.innerText = msg
+                            } else{
+                                let createElement = document.createElement("p")
+                                createElement.innerText = msg
+                                createElement.id = id
+                                createElement.style = "color:white"
+                                document.body.appendChild(createElement)
+                            }
                             bet[j].bets[betCount[k]].curr = liveStat
                         }
                     }

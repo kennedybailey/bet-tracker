@@ -1,5 +1,12 @@
+@font-face {
+  font-family: "cherrybomb";
+
+  src: url("fonts/cherrybomb-regular-webfont.woff") format("woff");
+}
+
 :root {
-  --primaryColor: #4a7aef;
+  --primaryColor: #3bb06f;
+  --text-color: #ebeff3;
 }
 
 body {
@@ -7,8 +14,9 @@ body {
 }
 
 .navbarInfo {
-  color: #4a7aef;
-  font-family: "Archivo Black", sans-serif;
+  color: var(--primaryColor);
+  font-family: "cherrybomb", Arial, sans-serif;
+  font-size: 45px;
 }
 
 .form {
@@ -25,8 +33,16 @@ body {
 }
 
 .DataTypes {
-  color: #ebeff3;
+  color: var(--text-color);
 }
 .Info {
-  color: #ebeff3;
+  color: var(--text-color);
+}
+
+hr {
+  color: var(--text-color);
+}
+.game {
+  color: var(--text-color);
+  padding: 1%;
 }

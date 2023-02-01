@@ -49,7 +49,7 @@ function updatePlayers(box, players){
                         let betCount = Object.keys(bet[b][j].bets)
                         for(let k = 0; k < betCount.length; k++){
                             console.log(`${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
-                            updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                            updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b)
                         }
                     }
                     else if (bet[b][j].gameStatus !== 'pregame'){
@@ -64,10 +64,10 @@ function updatePlayers(box, players){
                             }
                             if(liveStat !== bet[b][j].bets[betCount[k]].curr){
                                 let msg = `${bet[b][j].name} has ${liveStat}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                                updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, msg)
+                                updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, msg, b)
                                 bet[b][j].bets[betCount[k]].curr = liveStat
                             }
-                        }
+                        } 
                     }
                 }
             }
@@ -75,16 +75,31 @@ function updatePlayers(box, players){
     }
 }
 //TEMP FUNCTION
-function updateMsg(id, msg){
+function updateMsg(id, msg, betNum){
     let element = document.getElementById(id)
     if(element){
         element.innerText = msg
     } else{
-        let createElement = document.createElement("p")
-        createElement.innerText = msg
-        createElement.id = id
-        createElement.style = "color:white"
-        document.body.appendChild(createElement)
+        let div = document.getElementById(betNum)
+        if(div){
+            let createElement = document.createElement("p")
+            createElement.innerText = msg
+            createElement.id = id
+            createElement.style = "color:white"
+            div.appendChild(createElement)
+        } else{
+            let createDiv = document.createElement("div")
+            createDiv.innerText = `Bet ${betNum}:`
+            createDiv.id = betNum
+            createDiv.style = "color:white"
+            let createElement = document.createElement("p")
+            createElement.innerText = msg
+            createElement.id = id
+            createElement.style = "color:white"
+            createDiv.appendChild(createElement)
+            document.body.appendChild(createDiv)
+        }
+
     }  
 }
 

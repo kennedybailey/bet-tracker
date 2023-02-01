@@ -9,7 +9,7 @@ bet = [{
         'gameStatus': 'pregame'
     },
     {
-        'name': 'Jrue Holida',
+        'name': 'Jrue Holiday',
         'bets': {
             'reboundsTotal': {
                 'minValue': 4,
@@ -46,7 +46,7 @@ bet = [{
         'name': 'Darius Garland',
         'bets': {
             'points': {
-                'minValue': 20,
+                'minValue': 15,
                 'curr': 0
             }
         },
@@ -67,7 +67,7 @@ bet = [{
         'gameStatus': 'pregame'
     },
     {
-        'name': 'RJ Barret',
+        'name': 'RJ Barrett',
         'bets': {
             'points': {
                 'minValue': 15,
@@ -213,6 +213,10 @@ function getRealStats(){
         let gameTime = new Date(games[i].gameTimeUTC).getTime()
         let currentTime = new Date().getTime()
         if(gameTime <= currentTime){
+            let gameClock = games[i].gameClock
+            let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
+            let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
+            //console.log(`${games[i].period}Q ${minutes}:${seconds}`)
             let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
             axios.get(url).then(updateStats)
         }
@@ -239,7 +243,7 @@ function updateStats(response){
 function updatePlayers(box, players){
     for(let i = 0; i < players.length; i++){
         for(let j = 0; j < bet.length; j++){
-            if(players[i].name === bet[j].name){
+            if(players[i].name === bet[j].name && bet[j].gameStatus !== 'Final'){
                 if(box.gameStatusText !== 'pregame' && bet[j].gameStatus === 'pregame'){
                     bet[j].gameStatus = 'Started'
                     console.log(`${bet[j].name} has started their game.`)
@@ -249,6 +253,7 @@ function updatePlayers(box, players){
                     let betCount = Object.keys(bet[j].bets)
                     for(let k = 0; k < betCount.length; k++){
                         console.log(`${bet[j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                        updateMsg(`${bet[j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
                     }
                 }
                 else if (bet[j].gameStatus !== 'pregame'){
@@ -263,18 +268,7 @@ function updatePlayers(box, players){
                         }
                         if(liveStat !== bet[j].bets[betCount[k]].curr){
                             let msg = `${bet[j].name} has ${liveStat}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                            console.log(msg)
-                            let id = `${bet[j].name.replace(" ", "-")}-${betCount[k]}`
-                            let element = document.getElementById(id)
-                            if(element){
-                                element.innerText = msg
-                            } else{
-                                let createElement = document.createElement("p")
-                                createElement.innerText = msg
-                                createElement.id = id
-                                createElement.style = "color:white"
-                                document.body.appendChild(createElement)
-                            }
+                            updateMsg(`${bet[j].name.replace(" ", "-")}-${betCount[k]}`, msg)
                             bet[j].bets[betCount[k]].curr = liveStat
                         }
                     }
@@ -282,6 +276,20 @@ function updatePlayers(box, players){
             }
         }
     }
+}
+
+function updateMsg(id, msg){
+    let element = document.getElementById(id)
+    if(element){
+        element.innerText = msg
+    } else{
+        let createElement = document.createElement("p")
+        createElement.innerText = msg
+        createElement.id = id
+        createElement.style = "color:white"
+        document.body.appendChild(createElement)
+    }
+    
 }
 
 url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"

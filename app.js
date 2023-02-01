@@ -187,35 +187,19 @@ bet = [{
             }
         },
         'gameStatus': 'pregame'
-    },
-    {
-        'name': 'Stephen Curry',
-        'bets': {
-            'points': {
-                'minValue': 20,
-                'curr': 0
-            },
-            'assists': {
-                'minValue': 7,
-                'curr': 0
-            }
-        },
-        'gameStatus': 'pregame'
     }
 ]
 let games = {}
 
 //Functions
 function getRealStats(){
-    try{
-        let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022200759.json`
-        axios.get(url).then(updateStats)
-        for(let i = 0; i < games.length; i++){
-            //let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games.gameId}.json`
-            //axios.get(url).then(updateStats)
+    for(let i = 0; i < games.length; i++){
+        let gameTime = new Date(games[i].gameTimeUTC).getTime()
+        let currentTime = new Date().getTime()
+        if(gameTime <= currentTime){
+            let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
+            axios.get(url).then(updateStats)
         }
-    } catch(err){
-        console.log(err)
     }
 }
 
@@ -238,7 +222,6 @@ function updateStats(response){
 
 function updatePlayers(box, players){
     for(let i = 0; i < players.length; i++){
-        //console.log(players[i].name)
         for(let j = 0; j < bet.length; j++){
             if(players[i].name === bet[j].name){
                 if(box.gameStatusText !== 'pregame' && bet[j].gameStatus === 'pregame'){
@@ -250,6 +233,22 @@ function updatePlayers(box, players){
                     let betCount = Object.keys(bet[j].bets)
                     for(let k = 0; k < betCount.length; k++){
                         console.log(`${bet[j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                    }
+                }
+                else if (bet[j].gameStatus !== 'pregame'){
+                    let betCount = Object.keys(bet[j].bets)
+                    for(let k = 0; k < betCount.length; k++){
+                        let liveStat = 0
+                        if(betCount[k] === 'PRA'){
+                            liveStat = players[i].statistics.points + players[i].statistics.reboundsTotal + players[i].statistics.assists
+                        }
+                        else{
+                            liveStat = players[i].statistics[betCount[k]]
+                        }
+                        if(liveStat !== bet[j].bets[betCount[k]].curr){
+                            console.log(`${bet[j].name} has ${players[i].statistics[betCount[k]]}/${bet[j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                            bet[j].bets[betCount[k]].curr = liveStat
+                        }
                     }
                 }
             }

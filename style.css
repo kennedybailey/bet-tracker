@@ -34,9 +34,22 @@ body {
 .homeTitles {
   color: var(--primaryColor);
   font-family: "cherrybomb", Arial, sans-serif;
-  margin-left: 20px;
   margin-top: 30px;
   margin-bottom: 0;
+  margin-left: 21%;
+}
+
+.container-md {
+  display: block;
+  margin-top: 0;
+  padding: 2%;
+  background-color: #343434;
+  border-radius: 5px;
+}
+
+.betContainerStyle {
+  display: flex;
+  justify-content: center;
 }
 .form {
   display: flex;
@@ -45,16 +58,6 @@ body {
 
 .betStat {
   color: var(--text-color);
-}
-
-.container-md {
-  display: block;
-  margin-top: 0;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 2%;
-  background-color: #343434;
-  border-radius: 5px;
 }
 
 .DataTypes {

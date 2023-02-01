@@ -39,9 +39,6 @@ body {
   color: var(--text-color);
 }
 
-.hidden {
-  display: none;
-}
 .container-md {
   display: block;
   margin: auto;

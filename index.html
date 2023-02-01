@@ -55,8 +55,8 @@
 
     <div class="row">
       <div class="col-md-6">
-        <div class="container-md">
-          <form class="row">
+        <div class="container-md" id="betContainer">
+          <div class="row">
             <div class="col-md-6">
               <input
                 type="text"
@@ -74,6 +74,7 @@
                 <option value="1">Basketball</option>
               </select>
             </div>
+          </div>
             <div class="row">
               <div class="form-check col-md-6">
                 <input
@@ -154,18 +155,19 @@
               <div class="col-md-6">
                 <input type="number" />
               </div>
-            </div>
-            <div class="row legButton">
-              <input
+              <div class="row legButton">
+              <input 
+                type="submit" 
+                id="submit-form"
                 class="btn btn-outline-success"
-                type="button"
                 value="Add a Leg"
               />
+              </div>
             </div>
-            <div class="row">
-              <button class="btn btn-success" type="submit">Create Bet</button>
-            </div>
-          </form>
+          <div class="row">
+            <button class="btn btn-success" type="submit">Create Bet</button>
+          </div>
+        
         </div>
       </div>
       <div class="col-md-6">

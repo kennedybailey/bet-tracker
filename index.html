@@ -14,9 +14,20 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1>Bet Tracker</h1>
+    <nav class="navbar bg-dark sticky-top">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1 navbarInfo">Bet Slip</span>
+      </div>
+    </nav>
+
     <div class="form">
       <form class="row row-cols-lg-auto g-3">
         <div class="col-sm-3">
@@ -33,30 +44,34 @@
         </div>
       </form>
     </div>
-    <div class="container-md">
-      <div class="row">
-        <div class="col-sm-3 game">Game Info vs.</div>
-        <div class="col-sm-3 game">Game time</div>
-      </div>
-      <hr />
+    <div class="row">
+      <div class="col-md-6">
+        <div class="container-md">
+          <div class="row">
+            <div class="col-sm-3 game">Game Info vs.</div>
+            <div class="col-sm-3 game">Game time</div>
+          </div>
+          <hr />
 
-      <div class="row dataTypes">
-        <div class="col-sm-6">Player</div>
-        <div class="col-sm-2">Points</div>
-        <div class="col-sm-2">Assists</div>
-        <div class="col-sm-2">Rebounds</div>
-      </div>
-      <div class="row info">
-        <div class="col-sm-6">Lebron James</div>
-        <div class="col-sm-2">0</div>
-        <div class="col-sm-2">0</div>
-        <div class="col-sm-2">0</div>
-      </div>
-      <div class="row info">
-        <div class="col-sm-6">Lebron James</div>
-        <div class="col-sm-2">0</div>
-        <div class="col-sm-2">0</div>
-        <div class="col-sm-2">0</div>
+          <div class="row DataTypes">
+            <div class="col-sm-6">Player</div>
+            <div class="col-sm-2">Points</div>
+            <div class="col-sm-2">Assists</div>
+            <div class="col-sm-2">Rebounds</div>
+          </div>
+          <div class="row Info">
+            <div class="col-sm-6">Lebron James</div>
+            <div class="col-sm-2">0</div>
+            <div class="col-sm-2">0</div>
+            <div class="col-sm-2">0</div>
+          </div>
+          <div class="row Info">
+            <div class="col-sm-6">Lebron James</div>
+            <div class="col-sm-2">0</div>
+            <div class="col-sm-2">0</div>
+            <div class="col-sm-2">0</div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="app.js"></script>

@@ -1,7 +1,14 @@
-h1 {
-  text-align: center;
+:root {
+  --primaryColor: #4a7aef;
+}
+
+body {
+  background-color: #272727;
+}
+
+.navbarInfo {
   color: #4a7aef;
-  margin: 30px;
+  font-family: "Archivo Black", sans-serif;
 }
 
 .form {
@@ -13,6 +20,13 @@ h1 {
   display: block;
   margin: auto;
   margin-top: 15px;
-  border: solid 2px #4a7aef;
+  border: solid 2px var(--primaryColor);
   border-radius: 3px;
+}
+
+.DataTypes {
+  color: #ebeff3;
+}
+.Info {
+  color: #ebeff3;
 }

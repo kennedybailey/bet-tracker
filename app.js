@@ -1,19 +1,33 @@
 bets = []
 let games = {}
+let finishedGames = []
 const cors = "https://cors-anywhere.herokuapp.com/"
 
 //Functions
 function getRealStats(){
     for(let i = 0; i < games.length; i++){
-        let gameTime = new Date(games[i].gameTimeUTC).getTime()
-        let currentTime = new Date().getTime()
-        let gameClock = games[i].gameClock
-        let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
-        let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
-        //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
-        if(gameTime <= currentTime){
+        if(games[i].gameStatusText === 'PPD'){
+            finishedGames.push(games[i])
+            games.splice(i, 1)
+        }
+        else if(games[i].gameStatusText === 'Final' || games[i].gameStatusText === 'Final/OT'){
+            games[i].finalChecker++
+            if(games[i].finalChecker > 1){
+                finishedGames.push(games[i])
+                games.splice(i, 1)
+            }
+        }
+        if(games[i]){
+            let gameTime = new Date(games[i].gameTimeUTC).getTime()
+            let currentTime = new Date().getTime()
+            let gameClock = games[i].gameClock
+            let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
+            let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
+            //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
+            if(gameTime <= currentTime){
                 let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
                 axios.get(url).then(updateStats)
+            }
         }
     }
 }
@@ -22,6 +36,7 @@ function logScoreboard(response){
     games = response.data.scoreboard.games
     console.log('Games Today:')
     for(let i = 0; i < games.length; i++){
+        games[i].finalChecker = 0;
         console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
     }
     getRealStats()
@@ -45,7 +60,7 @@ function updatePlayers(box, players){
                         //console.log(`${bets[b][j].name} has started their game.`)
                         //updateMsg(`${bets[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bets[b][j].name} has started their game. ${players[i].statistics[betCount[k]]}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b+1)
                     }
-                    else if (box.gameStatusText === 'Final' && bets[b][j].gameStatus !== 'Final'){
+                    else if ((box.gameStatusText === 'Final' || box.gameStatusText === 'Final/OT') && bets[b][j].gameStatus !== 'Final'){
                         bets[b][j].gameStatus = 'Final'
                         let betCount = Object.keys(bets[b][j].bets)
                         for(let k = 0; k < betCount.length; k++){

@@ -40,7 +40,7 @@ body {
   font-family: "cherrybomb", Arial, sans-serif;
   margin-top: 30px;
   margin-bottom: 0;
-  margin-left: 21%;
+  margin-left: 12%;
 }
 
 /*css withing the "create a bet" and "my bets" containers*/
@@ -80,10 +80,15 @@ body {
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
+.formPlayerName {
+  margin-bottom: 5px;
+}
+
 .betStatNumber {
   display: block;
   margin-top: 5px;
   padding: 1%;
+
   background-color: var(--form-color);
   border-radius: 5px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
@@ -157,4 +162,11 @@ hr {
 .answer {
   text-align: center;
   color: var(--text-color);
+}
+
+/*If page is 1500px or less..*/
+@media (max-width: 1700px) {
+  .homeTitles {
+    font-size: 30px;
+  }
 }

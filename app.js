@@ -12,8 +12,10 @@ function getRealStats(){
         let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
         //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
         if(gameTime <= currentTime){
-            let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
-            axios.get(`${cors}${url}`).then(updateStats)
+                let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
+                axios.get(url).then(updateStats).catch(function (err){
+                    console.log(`Error getting the game between ${games[i].awayTeam.teamName} vs ${games[i].homeTeam.teamName}`)
+                })
         }
     }
 }
@@ -42,14 +44,15 @@ function updatePlayers(box, players){
                 if(players[i].name === bet[b][j].name && bet[b][j].gameStatus !== 'Final'){
                     if(box.gameStatusText !== 'pregame' && bet[b][j].gameStatus === 'pregame'){
                         bet[b][j].gameStatus = 'Started'
-                        console.log(`${bet[b][j].name} has started their game.`)
+                        //console.log(`${bet[b][j].name} has started their game.`)
+                        updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has started their game. ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b+1)
                     }
                     else if (box.gameStatusText === 'Final' && bet[b][j].gameStatus !== 'Final'){
                         bet[b][j].gameStatus = 'Final'
                         let betCount = Object.keys(bet[b][j].bets)
                         for(let k = 0; k < betCount.length; k++){
-                            console.log(`${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
-                            updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b)
+                            //console.log(`${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
+                            updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bet[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b+1)
                         }
                     }
                     else if (bet[b][j].gameStatus !== 'pregame'){
@@ -64,7 +67,7 @@ function updatePlayers(box, players){
                             }
                             if(liveStat !== bet[b][j].bets[betCount[k]].curr){
                                 let msg = `${bet[b][j].name} has ${liveStat}/${bet[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                                updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, msg, b)
+                                updateMsg(`${bet[b][j].name.replace(" ", "-")}-${betCount[k]}`, msg, b+1)
                                 bet[b][j].bets[betCount[k]].curr = liveStat
                             }
                         } 
@@ -89,13 +92,17 @@ function updateMsg(id, msg, betNum){
             div.appendChild(createElement)
         } else{
             let createDiv = document.createElement("div")
-            createDiv.innerText = `Bet ${betNum}:`
             createDiv.id = betNum
-            createDiv.style = "color:white"
+            createDiv.style = "color:white;text-align:center"
+            
+            let createH1 = document.createElement("h1")
+            createH1.innerText = `Bet ${betNum}:`
+            createH1.style = "color:white"
             let createElement = document.createElement("p")
             createElement.innerText = msg
             createElement.id = id
             createElement.style = "color:white"
+            createDiv.appendChild(createH1)
             createDiv.appendChild(createElement)
             document.body.appendChild(createDiv)
         }
@@ -105,7 +112,6 @@ function updateMsg(id, msg, betNum){
 
 //Event Listener
 function addLegForm(){
-    console.log('adding leg')
     let legElement = document.getElementById("legContainer");
     let child = legElement.children
     let newId = parseInt(child[child.length-1].id.substring(child[child.length-1].id.indexOf('-')+1,child[child.length-1].id.length)) + 1
@@ -164,6 +170,17 @@ function addBetToHtml(){
     document.querySelector('#betContainer').innerHTML = defaultLegs
     document.getElementById("addLeg").addEventListener("click", addLegForm)
     document.getElementById("addBet").addEventListener("click", addBetToHtml)
+    for(let i = 0; i < bet.length; i++){
+        let betNum = bets.length
+        for(let j = 0; j < Object.keys(bet[i].bets).length; j++){
+            let id = `${bet[i].name.replace(" ", "-")}-${Object.keys(bet[i].bets)[j]}-${j}`
+            let msg = `Waiting for ${bet[i].name}'s game to start. Tracking ${Object.keys(bet[i].bets)[j]} with a minimum of ${bet[i].bets[Object.keys(bet[i].bets)[j]].minValue}`
+            updateMsg(id, msg, betNum)
+        }
+
+    }
+
+    
 }
 let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml)

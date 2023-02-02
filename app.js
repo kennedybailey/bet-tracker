@@ -1,6 +1,13 @@
 bets = []
 let games = {}
 let finishedGames = []
+let statConversion = {
+    'points' : 'Points',
+    'assists' : 'Assists',
+    'reboundsTotal' : 'Rebounds',
+    'PRA': 'PRA',
+    'threePointersMade' : '3-Pointers'
+}
 const cors = "https://cors-anywhere.herokuapp.com/"
 
 //Functions
@@ -20,10 +27,6 @@ function getRealStats(){
         if(games[i]){
             let gameTime = new Date(games[i].gameTimeUTC).getTime()
             let currentTime = new Date().getTime()
-            let gameClock = games[i].gameClock
-            let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
-            let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
-            //console.log(`${games[i].period}Q ${minutes}:${seconds}`)          - OT = 5Q
             if(gameTime <= currentTime){
                 let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
                 axios.get(url).then(updateStats)
@@ -80,7 +83,6 @@ function updatePlayers(box, players){
                             }
                             if(liveStat !== bets[b][j].bets[betCount[k]].curr){
                                 let msg = `${bets[b][j].name} has ${liveStat}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                                console.log(msg)
                                 updateMsg(`${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-${b}`, msg, b+1)
                                 bets[b][j].bets[betCount[k]].curr = liveStat
                             }
@@ -122,6 +124,145 @@ function updateMsg(id, msg, betNum){
         }
 
     }  
+}
+async function createBets(bet){
+    let matchups = []
+    //get all matchup
+    for(let i = 0; i < games.length; i++){
+        let nextMatchup = {
+            matchup : `${games[i].awayTeam.teamTricode} vs ${games[i].homeTeam.teamTricode}`,
+            players: []
+        }
+        matchups.push(nextMatchup)
+    }
+
+    //get all players in the same games from bet
+    for(let i = 0; i < bet.length; i++){
+        function printResp(response){
+            livePlayers = response.data.data
+            for(let j = 0; j < livePlayers.length; j++){
+                //Giannis Antetokounmpo
+                for(let k = 0; k < matchups.length; k++){
+                    if(matchups[k].matchup.includes(livePlayers[j].team.abbreviation)){
+                        matchups[k].players.push(livePlayers[j].first_name+" "+livePlayers[j].last_name)
+                    }
+                }
+            }
+        }
+        let options = {
+            method: 'GET',
+            url: 'https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
+            params: {per_page: 500, search: bet[i].name},
+            headers: {
+              'X-RapidAPI-Key': '5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
+              'X-RapidAPI-Host': 'free-nba.p.rapidapi.com'
+            }
+        };
+        axios.request(options).then(printResp)
+    }
+
+    let container = document.getElementById("allBetsContainer")
+    //create div container for bet
+    let betNum = container.querySelectorAll(':scope > div').length
+    let divContainer = document.createElement("div")
+    divContainer.id = `bet-${betNum}`
+
+    //Bet Title
+    let divRowTitle = document.createElement("div")
+    divRowTitle.className = "row"
+
+    //Bet Title Text
+    let betTitle = document.createElement("h4")
+    betTitle.className = "whichBet"
+    betTitle.innerText = `Bet ${betNum+1}`
+    
+    //appendTitle
+    divRowTitle.appendChild(betTitle)
+    divContainer.appendChild(divRowTitle)
+
+    //Game Info
+    let divRowGameInfo = document.createElement("div")
+    divRowGameInfo.className = "row"
+
+    //Game Info Data
+    //get matchups with players in them
+    await sleep(200);
+    let currMatchups = []
+    for(let i = 0; i < matchups.length; i++){
+        if(matchups[i].players.length !== 0){
+            currMatchups.push(matchups[i])
+        }
+    }
+    console.log(currMatchups)
+    /*let teams = document.createElement("div")
+    teams.className = "col-sm-6 game"
+    teams.innerText = `${box.homeTeam.teamTricode} vs. ${box.awayTeam.teamTricode}`
+    let time = document.createElement("div")
+    time.className = "col-sm-6 game"
+    let gameClock = games[i].gameClock
+    let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
+    let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
+    let currQ = `${box.period}Q`
+    if(quarter === '5'){
+        currQ = 'OT'
+    }
+    time.innerText = `${currQ} ${minutes}:${seconds}`
+
+    //appendGameInfo
+    divRowGameInfo.appendChild(teams)
+    divRowGameInfo.appendChild(time)
+    divContainer.appendChild(divRowGameInfo)*/
+
+    //Create players
+    for(let i = 0; i < bet.length; i++){
+        //create entire row for players
+        let divRowPlayer = document.createElement("div")
+        divRowPlayer.className = "row"
+
+        //col Name
+        let divColPlayer = document.createElement("div")
+        divColPlayer.className = "col-md-4 info"
+        divColPlayer.innerText = bet[i].name
+
+        //col stats
+        let divColStats = document.createElement("div")
+        divColStats.className = "col-md-4 DataTypes"
+        let betCount = Object.keys(bet[i].bets)
+        for(let s = 0; s < betCount.length; s++){
+            let divStat = document.createElement("div")
+            divStat.className = "row"
+            divStat.innerText = `${statConversion[betCount[s]]}`
+            divColStats.appendChild(divStat)
+        }
+
+        //col values
+        let divValueStats = document.createElement("div")
+        divValueStats.className = "col-md-4 info"
+        for(let v = 0; v < betCount.length; v++){
+            let divValue = document.createElement("div")
+            divValue.className = "row"
+            divValue.innerText = `${bet[i].bets[betCount[v]].curr}/${bet[i].bets[betCount[v]].minValue}`
+            divValueStats.appendChild(divValue)
+        }
+
+        //append player stats
+        divRowPlayer.appendChild(divColPlayer)
+        divRowPlayer.appendChild(divColStats)
+        divRowPlayer.appendChild(divValueStats)
+
+        if(i !== bet.length){
+            divContainer.appendChild(document.createElement("br"))
+        }
+        //append RowPlayer
+        divContainer.appendChild(divRowPlayer)
+    }
+    //append endBet
+    let hrEnd = document.createElement("hr")
+    hrEnd.className = "endBet"
+    divContainer.appendChild(hrEnd)
+    //append everything
+    container.appendChild(divContainer)
+    
 }
 
 //Event Listener
@@ -193,13 +334,18 @@ function addBetToHtml(){
         }
 
     }
-
+    createBets(bet)
     
 }
 let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml)
 
+//sleep
+function sleep(milliseconds) {  
+    return new Promise(resolve => setTimeout(resolve, milliseconds));  
+ }  
+
 //default behaviour
-url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
-axios.get(`${cors}${url}`).then(logScoreboard)
+let url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
+axios.get(url).then(logScoreboard)
 setInterval(getRealStats, 2000)

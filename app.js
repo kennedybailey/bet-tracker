@@ -180,39 +180,94 @@ async function createBets(bet){
     divRowTitle.appendChild(betTitle)
     divContainer.appendChild(divRowTitle)
 
-    //Game Info
-    let divRowGameInfo = document.createElement("div")
-    divRowGameInfo.className = "row"
 
     //Game Info Data
     //get matchups with players in them
-    await sleep(200);
+    await sleep(1000);
     let currMatchups = []
     for(let i = 0; i < matchups.length; i++){
         if(matchups[i].players.length !== 0){
             currMatchups.push(matchups[i])
         }
     }
-    console.log(currMatchups)
-    /*let teams = document.createElement("div")
-    teams.className = "col-sm-6 game"
-    teams.innerText = `${box.homeTeam.teamTricode} vs. ${box.awayTeam.teamTricode}`
-    let time = document.createElement("div")
-    time.className = "col-sm-6 game"
-    let gameClock = games[i].gameClock
-    let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
-    let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
-    let currQ = `${box.period}Q`
-    if(quarter === '5'){
-        currQ = 'OT'
+    for(let i = 0; i < currMatchups.length; i++){
+        //Game Info
+        let divRowGameInfo = document.createElement("div")
+        divRowGameInfo.className = "row"
+        let teams = document.createElement("div")
+        teams.className = "col-sm-6 game"
+        teams.innerText = currMatchups[i].matchup
+        let time = document.createElement("div")
+        time.className = "col-sm-6 game"
+        let gameClock = games[i].gameClock
+        let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
+        let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
+        let quarter = ""
+        let currQ = "1Q"//`${box.period}Q`
+        if(quarter === '5'){
+            currQ = 'OT'
+        }
+        time.innerText = `${currQ} ${minutes}:${seconds}`
+
+        //appendGameInfo
+        divRowGameInfo.appendChild(teams)
+        divRowGameInfo.appendChild(time)
+        divContainer.appendChild(divRowGameInfo)
+
+        for(let k = 0; k < currMatchups[i].players.length; k++){
+            //create players
+            let divRowPlayer = document.createElement("div")
+            divRowPlayer.className = "row"
+
+            //col Name
+            let divColPlayer = document.createElement("div")
+            divColPlayer.className = "col-md-4 info"
+            divColPlayer.innerText = currMatchups[i].players[k]
+                
+            //bet values
+            for(let b = 0; b < bet.length; b++){
+                if(bet[b].name === currMatchups[i].players[k]){
+                    //col stats
+                    let divColStats = document.createElement("div")
+                    divColStats.className = "col-md-4 DataTypes"
+                    let betCount = Object.keys(bet[b].bets)
+                    for(let s = 0; s < betCount.length; s++){
+                        let divStat = document.createElement("div")
+                        divStat.className = "row"
+                        divStat.innerText = `${statConversion[betCount[s]]}`
+                        divColStats.appendChild(divStat)
+                    }
+
+                    //col values
+                    let divValueStats = document.createElement("div")
+                    divValueStats.className = "col-md-4 info"
+                    for(let v = 0; v < betCount.length; v++){
+                        let divValue = document.createElement("div")
+                        divValue.className = "row"
+                        divValue.innerText = `${bet[b].bets[betCount[v]].curr}/${bet[b].bets[betCount[v]].minValue}`
+                        divValueStats.appendChild(divValue)
+                    }
+
+                    
+                    //append player stats
+                    divRowPlayer.appendChild(divColPlayer)
+                    console.log('appending '+bet[b].name)
+                    divRowPlayer.appendChild(divColStats)
+                    divRowPlayer.appendChild(divValueStats)
+
+                    if(i !== bet.length){
+                        divContainer.appendChild(document.createElement("br"))
+                    }
+                    //append RowPlayer
+                    divContainer.appendChild(divRowPlayer)
+                }
+            }
+        }
+        if(i !== currMatchups.length - 1){
+            divContainer.appendChild(document.createElement("hr"))
+        }
     }
-    time.innerText = `${currQ} ${minutes}:${seconds}`
-
-    //appendGameInfo
-    divRowGameInfo.appendChild(teams)
-    divRowGameInfo.appendChild(time)
-    divContainer.appendChild(divRowGameInfo)*/
-
+    /*
     //Create players
     for(let i = 0; i < bet.length; i++){
         //create entire row for players
@@ -255,7 +310,7 @@ async function createBets(bet){
         }
         //append RowPlayer
         divContainer.appendChild(divRowPlayer)
-    }
+    }*/
     //append endBet
     let hrEnd = document.createElement("hr")
     hrEnd.className = "endBet"

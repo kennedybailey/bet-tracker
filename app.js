@@ -192,13 +192,16 @@ async function createBets(bet){
     }
     for(let i = 0; i < currMatchups.length; i++){
         //Game Info
+        let gameInfoContainer = document.createElement("div")
+        gameInfoContainer.className = "container-md gameBox"
         let divRowGameInfo = document.createElement("div")
         divRowGameInfo.className = "row"
         let teams = document.createElement("div")
-        teams.className = "col-sm-6 game"
-        teams.innerText = currMatchups[i].matchup
+        teams.className = "col-sm-6 game text-center"
+        //teams.innerText = currMatchups[i].matchup
+        teams.innerText = "TOR 97 - 102 UTA"
         let time = document.createElement("div")
-        time.className = "col-sm-6 game"
+        time.className = "col-sm-6 game text-center"
         let gameClock = games[i].gameClock
         let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
         let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
@@ -207,12 +210,13 @@ async function createBets(bet){
         if(quarter === '5'){
             currQ = 'OT'
         }
-        time.innerText = `${currQ} ${minutes}:${seconds}`
-
+        //time.innerText = `${currQ} ${minutes}:${seconds}`
+        time.innerText = "1Q 7:23"
         //appendGameInfo
         divRowGameInfo.appendChild(teams)
         divRowGameInfo.appendChild(time)
-        divContainer.appendChild(divRowGameInfo)
+        gameInfoContainer.appendChild(divRowGameInfo)
+        divContainer.appendChild(gameInfoContainer)
 
         for(let k = 0; k < currMatchups[i].players.length; k++){
             //create players
@@ -221,7 +225,7 @@ async function createBets(bet){
 
             //col Name
             let divColPlayer = document.createElement("div")
-            divColPlayer.className = "col-md-4 info"
+            divColPlayer.className = "col-md-6 info"
             divColPlayer.innerText = currMatchups[i].players[k]
                 
             //bet values
@@ -229,31 +233,27 @@ async function createBets(bet){
                 if(bet[b].name === currMatchups[i].players[k]){
                     //col stats
                     let divColStats = document.createElement("div")
-                    divColStats.className = "col-md-4 DataTypes"
+                    divColStats.className = "col-md-6 dataTypes"
                     let betCount = Object.keys(bet[b].bets)
                     for(let s = 0; s < betCount.length; s++){
                         let divStat = document.createElement("div")
                         divStat.className = "row"
-                        divStat.innerText = `${statConversion[betCount[s]]}`
+                        //divStat.innerText = `${statConversion[betCount[s]]}`
+                        let divValue = document.createElement("div")
+                        divValue.className = "col-md-4"
+                        divValue.innerText = `${bet[b].bets[betCount[s]].curr}/${bet[b].bets[betCount[s]].minValue}`
+                        let divStatName = document.createElement("div")
+                        divStatName.className = "col-md-8"
+                        divStatName.innerText = `${statConversion[betCount[s]]}`
+                        divStat.append(divValue)
+                        divStat.append(divStatName)
                         divColStats.appendChild(divStat)
                     }
-
-                    //col values
-                    let divValueStats = document.createElement("div")
-                    divValueStats.className = "col-md-4 info"
-                    for(let v = 0; v < betCount.length; v++){
-                        let divValue = document.createElement("div")
-                        divValue.className = "row"
-                        divValue.innerText = `${bet[b].bets[betCount[v]].curr}/${bet[b].bets[betCount[v]].minValue}`
-                        divValueStats.appendChild(divValue)
-                    }
-
                     
                     //append player stats
                     divRowPlayer.appendChild(divColPlayer)
                     console.log('appending '+bet[b].name)
                     divRowPlayer.appendChild(divColStats)
-                    divRowPlayer.appendChild(divValueStats)
 
                     if(i !== bet.length){
                         divContainer.appendChild(document.createElement("br"))
@@ -267,57 +267,12 @@ async function createBets(bet){
             divContainer.appendChild(document.createElement("hr"))
         }
     }
-    /*
-    //Create players
-    for(let i = 0; i < bet.length; i++){
-        //create entire row for players
-        let divRowPlayer = document.createElement("div")
-        divRowPlayer.className = "row"
-
-        //col Name
-        let divColPlayer = document.createElement("div")
-        divColPlayer.className = "col-md-4 info"
-        divColPlayer.innerText = bet[i].name
-
-        //col stats
-        let divColStats = document.createElement("div")
-        divColStats.className = "col-md-4 DataTypes"
-        let betCount = Object.keys(bet[i].bets)
-        for(let s = 0; s < betCount.length; s++){
-            let divStat = document.createElement("div")
-            divStat.className = "row"
-            divStat.innerText = `${statConversion[betCount[s]]}`
-            divColStats.appendChild(divStat)
-        }
-
-        //col values
-        let divValueStats = document.createElement("div")
-        divValueStats.className = "col-md-4 info"
-        for(let v = 0; v < betCount.length; v++){
-            let divValue = document.createElement("div")
-            divValue.className = "row"
-            divValue.innerText = `${bet[i].bets[betCount[v]].curr}/${bet[i].bets[betCount[v]].minValue}`
-            divValueStats.appendChild(divValue)
-        }
-
-        //append player stats
-        divRowPlayer.appendChild(divColPlayer)
-        divRowPlayer.appendChild(divColStats)
-        divRowPlayer.appendChild(divValueStats)
-
-        if(i !== bet.length){
-            divContainer.appendChild(document.createElement("br"))
-        }
-        //append RowPlayer
-        divContainer.appendChild(divRowPlayer)
-    }*/
     //append endBet
     let hrEnd = document.createElement("hr")
     hrEnd.className = "endBet"
     divContainer.appendChild(hrEnd)
     //append everything
     container.appendChild(divContainer)
-    
 }
 
 //Event Listener

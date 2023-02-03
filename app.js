@@ -8,6 +8,8 @@ let statConversion = {
     'PRA': 'PRA',
     'threePointersMade' : '3-Pointers'
 }
+let liveGameValues = []
+
 const cors = "https://cors-anywhere.herokuapp.com/"
 
 //Functions
@@ -47,10 +49,47 @@ function logScoreboard(response){
 
 function updateStats(response){
     box = response.data.game
-    awayTeam = response.data.game.awayTeam.players
-    updatePlayers(box, awayTeam)
-    homeTeam = response.data.game.homeTeam.players
-    updatePlayers(box, homeTeam)
+    updateGameInfo(box)
+    awayTeamPlayers = response.data.game.awayTeam.players
+    updatePlayers(box, awayTeamPlayers)
+    homeTeamPlayers = response.data.game.homeTeam.players
+    updatePlayers(box, homeTeamPlayers)
+}
+
+function updateGameInfo(box){
+    let awayScore = document.getElementById(`${box.awayTeam.teamTricode}-score`)
+    if(awayScore.innerText !== box.awayTeam.score){
+        awayScore.innerText = box.awayTeam.score
+    }
+    let homeScore = document.getElementById(`${box.homeTeam.teamTricode}-score`)
+    if(homeScore.innerText !== box.homeTeam.score){
+        homeScore.innerText = box.homeTeam.score
+    }
+    let currGameInfo = document.getElementById(`${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
+    let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
+    let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('S'))
+    let quarter = `${box.quarter}Q`
+    if(quarter === '5Q'){
+        quarter = 'OT'
+    }
+    let gameTime = ""
+    if(quarter === `0Q`){
+        gameTime = 'Pregame'
+    } 
+    else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
+        gameTime = 'Final'
+    }
+    else{
+        if(quarter === '5Q'){
+            quarter = 'OT'
+        }
+        gameTime = `${quarter} ${minutes}:${seconds}`
+    }
+
+    if(currGameInfo.innerText !== gameTime){
+        currGameInfo.innerText = gameTime
+    }
+
 }
 
 function updatePlayers(box, players){
@@ -60,16 +99,9 @@ function updatePlayers(box, players){
                 if(players[i].name === bets[b][j].name && bets[b][j].gameStatus !== 'Final'){
                     if(box.gameStatusText !== 'pregame' && bets[b][j].gameStatus === 'pregame'){
                         bets[b][j].gameStatus = 'Started'
-                        //console.log(`${bets[b][j].name} has started their game.`)
-                        //updateMsg(`${bets[b][j].name.replace(" ", "-")}-${betCount[k]}`, `${bets[b][j].name} has started their game. ${players[i].statistics[betCount[k]]}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b+1)
                     }
                     else if ((box.gameStatusText === 'Final' || box.gameStatusText === 'Final/OT') && bets[b][j].gameStatus !== 'Final'){
                         bets[b][j].gameStatus = 'Final'
-                        let betCount = Object.keys(bets[b][j].bets)
-                        for(let k = 0; k < betCount.length; k++){
-                            //console.log(`${bets[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`)
-                            updateMsg(`${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-${b}`, `${bets[b][j].name} has finished their game with ${players[i].statistics[betCount[k]]}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`, b+1)
-                        }
                     }
                     else if (bets[b][j].gameStatus !== 'pregame'){
                         let betCount = Object.keys(bets[b][j].bets)
@@ -82,8 +114,8 @@ function updatePlayers(box, players){
                                 liveStat = players[i].statistics[betCount[k]]
                             }
                             if(liveStat !== bets[b][j].bets[betCount[k]].curr){
-                                let msg = `${bets[b][j].name} has ${liveStat}/${bets[b][j].bets[betCount[k]].minValue} ${betCount[k]}.`
-                                updateMsg(`${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-${b}`, msg, b+1)
+                                let id = `${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-${b}`
+                                updateBet(id, liveStat)
                                 bets[b][j].bets[betCount[k]].curr = liveStat
                             }
                         } 
@@ -93,45 +125,25 @@ function updatePlayers(box, players){
         }
     }
 }
-//TEMP FUNCTION
-function updateMsg(id, msg, betNum){
-    let element = document.getElementById(id)
-    if(element){
-        element.innerText = msg
-    } else{
-        let div = document.getElementById(betNum)
-        if(div){
-            let createElement = document.createElement("p")
-            createElement.innerText = msg
-            createElement.id = id
-            createElement.style = "color:white"
-            div.appendChild(createElement)
-        } else{
-            let createDiv = document.createElement("div")
-            createDiv.id = betNum
-            createDiv.style = "color:white;text-align:center"
-            
-            let createH1 = document.createElement("h1")
-            createH1.innerText = `Bet ${betNum}:`
-            createH1.style = "color:white"
-            let createElement = document.createElement("p")
-            createElement.innerText = msg
-            createElement.id = id
-            createElement.style = "color:white"
-            createDiv.appendChild(createH1)
-            createDiv.appendChild(createElement)
-            document.body.appendChild(createDiv)
-        }
 
-    }  
+function updateBet(id, newVal){
+    let oldVal = document.getElementById(id)
+    oldVal.innerText = newVal
 }
+
 async function createBets(bet){
     let matchups = []
     //get all matchup
     for(let i = 0; i < games.length; i++){
         let nextMatchup = {
             matchup : `${games[i].awayTeam.teamTricode} vs ${games[i].homeTeam.teamTricode}`,
-            players: []
+            players: [],
+            awayTeam : `${games[i].awayTeam.teamTricode}`,
+            homeTeam : `${games[i].homeTeam.teamTricode}`,
+            awayScore : `${games[i].awayTeam.score}`,
+            homeScore : `${games[i].homeTeam.score}`,
+            quarter: `${games[i].period}`,
+            gameClock: `${games[i].gameClock}`
         }
         matchups.push(nextMatchup)
     }
@@ -198,20 +210,57 @@ async function createBets(bet){
         divRowGameInfo.className = "row"
         let teams = document.createElement("div")
         teams.className = "col-sm-6 game text-center"
-        //teams.innerText = currMatchups[i].matchup
-        teams.innerText = "TOR 97 - 102 UTA"
+
+        //scores
+        let spanAwayTeam = document.createElement("span")
+        spanAwayTeam.innerText = `${currMatchups[i].awayTeam} `
+        teams.appendChild(spanAwayTeam)
+        let spanAwayScore = document.createElement("span")
+        spanAwayScore.id = `${currMatchups[i].awayTeam}-score`
+        spanAwayScore.innerText = `${currMatchups[i].awayScore} `
+        teams.appendChild(spanAwayScore)
+        let spanDash = document.createElement("span")
+        spanDash.innerText = `-`
+        teams.appendChild(spanDash)
+        let spanHomeScore = document.createElement("span")
+        spanHomeScore.id = `${currMatchups[i].homeTeam}-score`
+        spanHomeScore.innerText = ` ${currMatchups[i].homeScore}`
+        teams.appendChild(spanHomeScore)
+        let spanHomeTeam = document.createElement("span")
+        spanHomeTeam.innerText = ` ${currMatchups[i].homeTeam}`
+        teams.appendChild(spanHomeTeam)
+        
+        //time
         let time = document.createElement("div")
         time.className = "col-sm-6 game text-center"
-        let gameClock = games[i].gameClock
-        let minutes = gameClock.substring(gameClock.indexOf('T')+1, gameClock.lastIndexOf('M'))
-        let seconds = gameClock.substring(gameClock.indexOf('M')+1, gameClock.lastIndexOf('S'))
-        let quarter = ""
-        let currQ = "1Q"//`${box.period}Q`
-        if(quarter === '5'){
-            currQ = 'OT'
+        time.id = `${currMatchups[i].awayTeam}-${currMatchups[i].homeTeam}-time`
+        let minutes = currMatchups[i].gameClock.substring(currMatchups[i].gameClock.indexOf('T')+1, currMatchups[i].gameClock.lastIndexOf('M'))
+        let seconds = currMatchups[i].gameClock.substring(currMatchups[i].gameClock.indexOf('M')+1, currMatchups[i].gameClock.lastIndexOf('S'))
+        let quarter = `${currMatchups[i].quarter}Q`
+        if(quarter === '5Q'){
+            quarter = 'OT'
         }
-        //time.innerText = `${currQ} ${minutes}:${seconds}`
-        time.innerText = "1Q 7:23"
+        let gameTime = ""
+        if(quarter === `0Q`){
+            gameTime = 'Pregame'
+        } 
+        else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
+            gameTime = 'Final'
+        }
+        else{
+            if(quarter === '5Q'){
+                quarter = 'OT'
+            }
+            gameTime = `${quarter} ${minutes}:${seconds}`
+        }
+        time.innerText = gameTime
+
+        //save current game times
+        let liveMatchupInfo = {}
+        liveMatchupInfo.matchup = currMatchups[i].matchup
+        liveMatchupInfo.gameTime = gameTime
+        liveGameValues.push(liveMatchupInfo)
+
         //appendGameInfo
         divRowGameInfo.appendChild(teams)
         divRowGameInfo.appendChild(time)
@@ -241,7 +290,13 @@ async function createBets(bet){
                         let divValue = document.createElement("div")
                         divValue.className = "col-md-4"
                         divValue.id = `${bet[b].name.replace(" ", "-")}-${betCount[s]}-${betNum}`
-                        divValue.innerText = `${bet[b].bets[betCount[s]].curr}/${bet[b].bets[betCount[s]].minValue}`
+                        let spanLiveValue = document.createElement("span")
+                        spanLiveValue.id =  `${bet[b].name.replace(" ", "-")}-${betCount[s]}-live-${betNum}`
+                        spanLiveValue.innerText = `${bet[b].bets[betCount[s]].curr}`
+                        let spanMinValue = document.createElement("span")
+                        spanMinValue.innerText = `/${bet[b].bets[betCount[s]].minValue}`
+                        divValue.appendChild(spanLiveValue)
+                        divValue.appendChild(spanMinValue)
                         let divStatName = document.createElement("div")
                         divStatName.className = "col-md-8"
                         divStatName.innerText = `${statConversion[betCount[s]]}`
@@ -334,15 +389,6 @@ function addBetToHtml(){
     document.querySelector('#betContainer').innerHTML = defaultLegs
     document.getElementById("addLeg").addEventListener("click", addLegForm)
     document.getElementById("addBet").addEventListener("click", addBetToHtml)
-    for(let i = 0; i < bet.length; i++){
-        let betNum = bets.length
-        for(let j = 0; j < Object.keys(bet[i].bets).length; j++){
-            let id = `${bet[i].name.replace(" ", "-")}-${Object.keys(bet[i].bets)[j]}-${betNum-1}`
-            let msg = `Adding bet for ${bet[i].name}... Tracking ${Object.keys(bet[i].bets)[j]} with a minimum of ${bet[i].bets[Object.keys(bet[i].bets)[j]].minValue}`
-            updateMsg(id, msg, betNum)
-        }
-
-    }
     createBets(bet)
     
 }
@@ -357,4 +403,5 @@ function sleep(milliseconds) {
 //default behaviour
 let url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
 axios.get(url).then(logScoreboard)
-setInterval(getRealStats, 2000)
+//10 secs
+setInterval(getRealStats, 10000)

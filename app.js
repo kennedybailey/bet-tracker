@@ -238,9 +238,9 @@ async function createBets(bet){
                     for(let s = 0; s < betCount.length; s++){
                         let divStat = document.createElement("div")
                         divStat.className = "row"
-                        //divStat.innerText = `${statConversion[betCount[s]]}`
                         let divValue = document.createElement("div")
                         divValue.className = "col-md-4"
+                        divValue.id = `${bet[b].name.replace(" ", "-")}-${betCount[s]}-${betNum}`
                         divValue.innerText = `${bet[b].bets[betCount[s]].curr}/${bet[b].bets[betCount[s]].minValue}`
                         let divStatName = document.createElement("div")
                         divStatName.className = "col-md-8"
@@ -252,7 +252,6 @@ async function createBets(bet){
                     
                     //append player stats
                     divRowPlayer.appendChild(divColPlayer)
-                    console.log('appending '+bet[b].name)
                     divRowPlayer.appendChild(divColStats)
 
                     if(i !== bet.length){

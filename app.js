@@ -155,7 +155,6 @@ async function createBets(bet){
     //get all players in the same games from bet
     for(let i = 0; i < bet.length; i++){
         function printResp(response){
-            console.log(response)
             livePlayers = response.data
             for(let j = 0; j < livePlayers.length; j++){
                 //Giannis Antetokounmpo

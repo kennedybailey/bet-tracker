@@ -1,7 +1,7 @@
 @font-face {
-  font-family: "cherrybomb";
+  font-family: "bolden";
 
-  src: url("fonts/cherrybomb-regular-webfont.woff") format("woff");
+  src: url("fonts/bolden-regular-webfont.woff") format("woff");
 }
 
 :root {
@@ -46,7 +46,7 @@ body {
 /* Any titles on the home page outside of the Navbar*/
 .homeTitles {
   color: var(--primaryColor);
-  font-family: "cherrybomb", Arial, sans-serif;
+  font-family: "bolden", Arial, sans-serif;
   margin-top: 30px;
   margin-bottom: 0;
   margin-left: 12%;
@@ -167,7 +167,7 @@ hr {
 }
 .question {
   text-align: center;
-  font-family: "cherrybomb", Arial, sans-serif;
+  font-family: "bolden", Arial, sans-serif;
   color: var(--primaryColor);
   font-size: 35px;
 }

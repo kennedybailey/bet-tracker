@@ -7,7 +7,7 @@
 :root {
   --primaryColor: #3bb06f;
   --text-color: #ebeff3;
-  --basic-text-font: "Raleway", sans-serif;
+  --basic-text-font: "Roboto", sans-serif;
   --form-color: #cccbd1;
 }
 
@@ -52,7 +52,7 @@ body {
 }
 
 /*css withing the "create a bet" and "my bets" containers*/
-.container-md {
+.infoBox {
   display: block;
   margin-top: 0;
   padding: 2%;
@@ -123,29 +123,33 @@ body {
 /*my bet styling*/
 .whichBet {
   color: var(--primaryColor);
-  font-style: italic;
   font-weight: 600;
 }
-.betStat {
-  color: var(--text-color);
-}
 
-.DataTypes {
-  color: var(--text-color);
+.gameBox {
+  color: #272727;
+  font-weight: bold;
+  background-color: var(--form-color);
+  border-radius: 5px;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072);
 }
-.info {
-  color: var(--text-color);
-}
-
+.betStat,
+.dataTypes,
+.info,
 hr {
   color: var(--text-color);
+}
+
+.info {
+  font-weight: bold;
 }
 
 .endBet {
   border: 2px solid var(--primaryColor);
 }
 .game {
-  color: var(--text-color);
   padding: 1%;
 }
 

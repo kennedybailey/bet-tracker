@@ -25,6 +25,9 @@ body {
   font-family: "bolden", Arial, sans-serif;
   font-size: 45px;
 }
+.navbarInfo:hover{
+  color: var(--primaryColor)
+}
 .betColor {
   color: var(--text-color);
 }

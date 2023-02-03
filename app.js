@@ -169,7 +169,7 @@ async function createBets(bet){
           'X-RapidAPI-Key': '5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
           'X-RapidAPI-Host': 'free-nba.p.rapidapi.com'
         }
-        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`)}`, headers)
+        await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`)}`, headers)
         .then(response => {
             if (response.ok) return response.json()
             throw new Error('Network response was not ok.')
@@ -200,7 +200,6 @@ async function createBets(bet){
 
     //Game Info Data
     //get matchups with players in them
-    await sleep(3000);
     let currMatchups = []
     for(let i = 0; i < matchups.length; i++){
         if(matchups[i].players.length !== 0){
@@ -398,12 +397,7 @@ function addBetToHtml(){
     
 }
 let addBet = document.getElementById("addBet")
-addBet.addEventListener("click", addBetToHtml)
-
-//sleep
-function sleep(milliseconds) {  
-    return new Promise(resolve => setTimeout(resolve, milliseconds));  
- }  
+addBet.addEventListener("click", addBetToHtml) 
 
 //default behaviour
 // with fetch

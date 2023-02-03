@@ -24,6 +24,7 @@ body {
   color: var(--primaryColor);
   font-family: "cherrybomb", Arial, sans-serif;
   font-size: 45px;
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #2e8a57, 0 0 40px #29774c;
 }
 
 .navbar-toggler-icon {

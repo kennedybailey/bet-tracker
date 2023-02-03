@@ -96,7 +96,7 @@ body {
   display: block;
   margin-top: 5px;
   padding: 1%;
-
+  width: 100%;
   background-color: var(--form-color);
   border-radius: 5px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),

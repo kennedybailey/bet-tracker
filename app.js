@@ -200,7 +200,7 @@ async function createBets(bet){
 
     //Game Info Data
     //get matchups with players in them
-    await sleep(1000);
+    await sleep(3000);
     let currMatchups = []
     for(let i = 0; i < matchups.length; i++){
         if(matchups[i].players.length !== 0){

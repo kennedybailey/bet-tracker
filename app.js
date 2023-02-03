@@ -10,8 +10,6 @@ let statConversion = {
 }
 let liveGameValues = []
 
-const cors = "https://cors-anywhere.herokuapp.com/"
-
 //Functions
 function getRealStats(){
     for(let i = 0; i < games.length; i++){
@@ -30,15 +28,21 @@ function getRealStats(){
             let gameTime = new Date(games[i].gameTimeUTC).getTime()
             let currentTime = new Date().getTime()
             if(gameTime <= currentTime){
-                let url = `https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`
-                axios.get(url).then(updateStats)
+                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json')}`)
+                .then(response => {
+                    if (response.ok) return response.json()
+                    throw new Error('Network response was not ok.')
+                })
+                .then(data => {
+                    updateStats(JSON.parse(data.contents))
+                });
             }
         }
     }
 }
 
 function logScoreboard(response){
-    games = response.data.scoreboard.games
+    games = response.scoreboard.games
     console.log('Games Today:')
     for(let i = 0; i < games.length; i++){
         games[i].finalChecker = 0;
@@ -48,7 +52,7 @@ function logScoreboard(response){
 }
 
 function updateStats(response){
-    box = response.data.game
+    box = response.game
     updateGameInfo(box)
     awayTeamPlayers = response.data.game.awayTeam.players
     updatePlayers(box, awayTeamPlayers)
@@ -151,7 +155,8 @@ async function createBets(bet){
     //get all players in the same games from bet
     for(let i = 0; i < bet.length; i++){
         function printResp(response){
-            livePlayers = response.data.data
+            console.log(response)
+            livePlayers = response.data
             for(let j = 0; j < livePlayers.length; j++){
                 //Giannis Antetokounmpo
                 for(let k = 0; k < matchups.length; k++){
@@ -161,16 +166,17 @@ async function createBets(bet){
                 }
             }
         }
-        let options = {
-            method: 'GET',
-            url: 'https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
-            params: {per_page: 500, search: bet[i].name},
-            headers: {
-              'X-RapidAPI-Key': '5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
-              'X-RapidAPI-Host': 'free-nba.p.rapidapi.com'
-            }
-        };
-        axios.request(options).then(printResp)
+        let headers =  {
+          'X-RapidAPI-Key': '5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
+          'X-RapidAPI-Host': 'free-nba.p.rapidapi.com'
+        }
+        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`)}`, headers)
+        .then(response => {
+            if (response.ok) return response.json()
+            throw new Error('Network response was not ok.')
+        })
+        .then(data => printResp(JSON.parse(data.contents)));
+        
     }
 
     let container = document.getElementById("allBetsContainer")
@@ -401,7 +407,15 @@ function sleep(milliseconds) {
  }  
 
 //default behaviour
-let url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
-axios.get(url).then(logScoreboard)
+// with fetch
+fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json')}`)
+.then(response => {
+	if (response.ok) return response.json()
+	throw new Error('Network response was not ok.')
+})
+.then(data => {
+    logScoreboard(JSON.parse(data.contents))
+});
+
 //10 secs
 setInterval(getRealStats, 10000)

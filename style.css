@@ -22,11 +22,12 @@ body {
 
 .navbarInfo {
   color: var(--primaryColor);
-  font-family: "cherrybomb", Arial, sans-serif;
+  font-family: "bolden", Arial, sans-serif;
   font-size: 45px;
-  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #2e8a57, 0 0 40px #29774c;
 }
-
+.betColor {
+  color: var(--text-color);
+}
 .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(235, 239, 243, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
@@ -46,10 +47,12 @@ body {
 /* Any titles on the home page outside of the Navbar*/
 .homeTitles {
   color: var(--primaryColor);
-  font-family: "bolden", Arial, sans-serif;
+  font-family: var(--basic-text-font);
+  font-size: 30px;
+  font-weight: 900;
+
   margin-top: 30px;
   margin-bottom: 0;
-  margin-left: 12%;
 }
 
 /*css withing the "create a bet" and "my bets" containers*/

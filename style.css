@@ -170,14 +170,27 @@ hr {
 }
 .question {
   text-align: center;
-  font-family: "bolden", Arial, sans-serif;
+  font-family: var(--basic-text-font);
   color: var(--primaryColor);
-  font-size: 35px;
+  font-size: 25px;
+  font-weight: 900;
 }
 
 .answer {
   text-align: center;
   color: var(--text-color);
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #272727;
+  color: var(--text-color);
+  font-family: var(--basic-text-font);
+  font-size: 10px;
+  text-align: center;
 }
 
 /*If page is 1500px or less..*/

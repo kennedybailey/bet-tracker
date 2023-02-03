@@ -217,14 +217,14 @@ async function createBets(bet){
         teams.appendChild(spanAwayTeam)
         let spanAwayScore = document.createElement("span")
         spanAwayScore.id = `${currMatchups[i].awayTeam}-score`
-        spanAwayScore.innerText = `${currMatchups[i].awayScore} `
+        spanAwayScore.innerText = `${currMatchups[i].awayScore}`
         teams.appendChild(spanAwayScore)
         let spanDash = document.createElement("span")
-        spanDash.innerText = `-`
+        spanDash.innerText = ` - `
         teams.appendChild(spanDash)
         let spanHomeScore = document.createElement("span")
         spanHomeScore.id = `${currMatchups[i].homeTeam}-score`
-        spanHomeScore.innerText = ` ${currMatchups[i].homeScore}`
+        spanHomeScore.innerText = `${currMatchups[i].homeScore}`
         teams.appendChild(spanHomeScore)
         let spanHomeTeam = document.createElement("span")
         spanHomeTeam.innerText = ` ${currMatchups[i].homeTeam}`

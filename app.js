@@ -54,16 +54,21 @@ function updateStats(response){
 }
 
 function updateGameInfo(box){
-    let awayScore = document.getElementById(`${box.awayTeam.teamTricode}-score`)
-    if(awayScore && awayScore.innerText !== box.awayTeam.score){
-        awayScore.innerText = box.awayTeam.score
+    let awayScore = document.querySelectorAll(`#${box.awayTeam.teamTricode}-score`)
+    for(let i = 0; i < awayScore.length; i++){
+        if(awayScore[i].innerText !== box.awayTeam.score){
+            awayScore[i].innerText = box.awayTeam.score
+        }
     }
-    let homeScore = document.getElementById(`${box.homeTeam.teamTricode}-score`)
-    if(homeScore && homeScore.innerText !== box.homeTeam.score){
-        homeScore.innerText = box.homeTeam.score
+    let homeScore = document.querySelectorAll(`#${box.homeTeam.teamTricode}-score`)
+    for(let i = 0; i < homeScore.length; i++){
+        if(homeScore[i].innerText !== box.homeTeam.score){
+            homeScore[i].innerText = box.homeTeam.score
+        }
     }
-    let currGameInfo = document.getElementById(`${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
-    if(currGameInfo){
+
+    let currGameInfo = document.querySelectorAll(`#${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
+    for(let i = 0; i < currGameInfo.length; i++){
         let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
         let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('.'))
         let quarter = `${box.period}Q`
@@ -87,11 +92,10 @@ function updateGameInfo(box){
             gameTime = `${quarter} ${minutes}:${seconds}`
         }
 
-        if(currGameInfo.innerText !== gameTime){
-            currGameInfo.innerText = gameTime
+        if(currGameInfo[i].innerText !== gameTime){
+            currGameInfo[i].innerText = gameTime
         }
     }
-
 }
 
 function updatePlayers(box, players){

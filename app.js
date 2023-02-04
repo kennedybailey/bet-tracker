@@ -28,21 +28,14 @@ function getRealStats(){
             let gameTime = new Date(games[i].gameTimeUTC).getTime()
             let currentTime = new Date().getTime()
             if(gameTime <= currentTime){
-                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json')}`)
-                .then(response => {
-                    if (response.ok) return response.json()
-                    throw new Error('Network response was not ok.')
-                })
-                .then(data => {
-                    updateStats(JSON.parse(data.contents))
-                });
+                axios.get(`https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`).then(updateStats)
             }
         }
     }
 }
 
 function logScoreboard(response){
-    games = response.scoreboard.games
+    games = response.data.scoreboard.games
     console.log('Games Today:')
     for(let i = 0; i < games.length; i++){
         games[i].finalChecker = 0;
@@ -52,46 +45,51 @@ function logScoreboard(response){
 }
 
 function updateStats(response){
-    box = response.game
+    box = response.data.game
     updateGameInfo(box)
-    awayTeamPlayers = response.data.game.awayTeam.players
+    awayTeamPlayers = box.awayTeam.players
     updatePlayers(box, awayTeamPlayers)
-    homeTeamPlayers = response.data.game.homeTeam.players
+    homeTeamPlayers = box.homeTeam.players
     updatePlayers(box, homeTeamPlayers)
 }
 
 function updateGameInfo(box){
     let awayScore = document.getElementById(`${box.awayTeam.teamTricode}-score`)
-    if(awayScore.innerText !== box.awayTeam.score){
+    if(awayScore && awayScore.innerText !== box.awayTeam.score){
         awayScore.innerText = box.awayTeam.score
     }
     let homeScore = document.getElementById(`${box.homeTeam.teamTricode}-score`)
-    if(homeScore.innerText !== box.homeTeam.score){
+    if(homeScore && homeScore.innerText !== box.homeTeam.score){
         homeScore.innerText = box.homeTeam.score
     }
     let currGameInfo = document.getElementById(`${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
-    let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
-    let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('S'))
-    let quarter = `${box.quarter}Q`
-    if(quarter === '5Q'){
-        quarter = 'OT'
-    }
-    let gameTime = ""
-    if(quarter === `0Q`){
-        gameTime = 'Pregame'
-    } 
-    else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
-        gameTime = 'Final'
-    }
-    else{
+    if(currGameInfo){
+        let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
+        let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('.'))
+        let quarter = `${box.period}Q`
         if(quarter === '5Q'){
             quarter = 'OT'
         }
-        gameTime = `${quarter} ${minutes}:${seconds}`
-    }
+        let gameTime = ""
+        if(quarter === `0Q`){
+            gameTime = 'Pregame'
+        } 
+        else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
+            gameTime = 'Final'
+        }
+        else if(minutes === '00' && seconds === '00'){
+            gameTime = `End of ${quarter}`
+        }
+        else{
+            if(quarter === '5Q'){
+                quarter = 'OT'
+            }
+            gameTime = `${quarter} ${minutes}:${seconds}`
+        }
 
-    if(currGameInfo.innerText !== gameTime){
-        currGameInfo.innerText = gameTime
+        if(currGameInfo.innerText !== gameTime){
+            currGameInfo.innerText = gameTime
+        }
     }
 
 }
@@ -118,7 +116,7 @@ function updatePlayers(box, players){
                                 liveStat = players[i].statistics[betCount[k]]
                             }
                             if(liveStat !== bets[b][j].bets[betCount[k]].curr){
-                                let id = `${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-${b}`
+                                let id = `${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-live-${b}`
                                 updateBet(id, liveStat)
                                 bets[b][j].bets[betCount[k]].curr = liveStat
                             }
@@ -155,7 +153,7 @@ async function createBets(bet){
     //get all players in the same games from bet
     for(let i = 0; i < bet.length; i++){
         function printResp(response){
-            livePlayers = response.data
+            livePlayers = response.data.data
             for(let j = 0; j < livePlayers.length; j++){
                 //Giannis Antetokounmpo
                 for(let k = 0; k < matchups.length; k++){
@@ -165,17 +163,7 @@ async function createBets(bet){
                 }
             }
         }
-        let headers =  {
-          'X-RapidAPI-Key': '5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f',
-          'X-RapidAPI-Host': 'free-nba.p.rapidapi.com'
-        }
-        await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`)}`, headers)
-        .then(response => {
-            if (response.ok) return response.json()
-            throw new Error('Network response was not ok.')
-        })
-        .then(data => printResp(JSON.parse(data.contents)));
-        
+        await axios.get(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`).then(printResp)
     }
 
     let container = document.getElementById("allBetsContainer")
@@ -199,6 +187,7 @@ async function createBets(bet){
 
 
     //Game Info Data
+    //await new Promise(r => setTimeout(r, 2000)); 
     //get matchups with players in them
     let currMatchups = []
     for(let i = 0; i < matchups.length; i++){
@@ -239,7 +228,7 @@ async function createBets(bet){
         time.className = "col-sm-6 game text-center"
         time.id = `${currMatchups[i].awayTeam}-${currMatchups[i].homeTeam}-time`
         let minutes = currMatchups[i].gameClock.substring(currMatchups[i].gameClock.indexOf('T')+1, currMatchups[i].gameClock.lastIndexOf('M'))
-        let seconds = currMatchups[i].gameClock.substring(currMatchups[i].gameClock.indexOf('M')+1, currMatchups[i].gameClock.lastIndexOf('S'))
+        let seconds = currMatchups[i].gameClock.substring(currMatchups[i].gameClock.indexOf('M')+1, currMatchups[i].gameClock.lastIndexOf('.'))
         let quarter = `${currMatchups[i].quarter}Q`
         if(quarter === '5Q'){
             quarter = 'OT'
@@ -250,6 +239,9 @@ async function createBets(bet){
         } 
         else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
             gameTime = 'Final'
+        }
+        else if(minutes === '00' && seconds === '00'){
+            gameTime = `End of ${quarter}`
         }
         else{
             if(quarter === '5Q'){
@@ -400,15 +392,11 @@ let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml) 
 
 //default behaviour
-// with fetch
-fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json')}`)
-.then(response => {
-	if (response.ok) return response.json()
-	throw new Error('Network response was not ok.')
-})
-.then(data => {
-    logScoreboard(JSON.parse(data.contents))
-});
-
 //10 secs
-setInterval(getRealStats, 10000)
+function printAxios(response){
+    console.log(response)
+}
+
+axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
+
+setInterval(getRealStats, 2000)

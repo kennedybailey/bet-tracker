@@ -12,19 +12,11 @@ let liveGameValues = []
 
 //Functions
 function getRealStats(){
-    for(let i = 0; i < games.length; i++){
-        if(games[i].gameStatusText === 'PPD'){
-            finishedGames.push(games[i])
-            games.splice(i, 1)
-        }
-        else if(games[i].gameStatusText === 'Final' || games[i].gameStatusText === 'Final/OT'){
-            games[i].finalChecker++
-            if(games[i].finalChecker > 1){
-                finishedGames.push(games[i])
-                games.splice(i, 1)
-            }
-        }
-        if(games[i]){
+    if(games.length === 0){
+        updateStats()
+    }
+    else {
+        for(let i = 0; i < games.length; i++){
             let gameTime = new Date(games[i].gameTimeUTC).getTime()
             let currentTime = new Date().getTime()
             if(gameTime <= currentTime){
@@ -34,66 +26,103 @@ function getRealStats(){
     }
 }
 
-function logScoreboard(response){
+async function logScoreboard(response){
     games = response.data.scoreboard.games
     console.log('Games Today:')
     for(let i = 0; i < games.length; i++){
-        games[i].finalChecker = 0;
-        console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
+        if(games[i]){
+            console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
+            if(games[i].gameStatusText === 'PPD'){
+                await axios.get(`https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`).then(function(){
+                    finishedGames.push(response.data.game)
+                })
+                games.splice(i, 1)
+                i--
+            }
+            else if(games[i].gameStatusText === 'Final' || games[i].gameStatusText === 'Final/OT'){
+                await axios.get(`https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${games[i].gameId}.json`).then(function(response){
+                    finishedGames.push(response.data.game)
+                })
+                games.splice(i, 1)
+                i--
+            }
+        }
     }
     getRealStats()
 }
 
 function updateStats(response){
-    box = response.data.game
-    updateGameInfo(box)
-    awayTeamPlayers = box.awayTeam.players
-    updatePlayers(box, awayTeamPlayers)
-    homeTeamPlayers = box.homeTeam.players
-    updatePlayers(box, homeTeamPlayers)
+    if(response){
+        let box = response.data.game
+        if(box){
+            updateGameInfo(box)
+            awayTeamPlayers = box.awayTeam.players
+            updatePlayers(box, awayTeamPlayers)
+            homeTeamPlayers = box.homeTeam.players
+            updatePlayers(box, homeTeamPlayers)
+        }
+    }else{
+        for(let i = 0; i < finishedGames.length; i++){
+            if(finishedGames[i]){
+                updateGameInfo(finishedGames[i])
+                awayTeamPlayers = finishedGames[i].awayTeam.players
+                updatePlayers(finishedGames[i], awayTeamPlayers)
+                homeTeamPlayers = finishedGames[i].homeTeam.players
+                updatePlayers(finishedGames[i], homeTeamPlayers)
+            }
+        }
+    }
 }
 
 function updateGameInfo(box){
-    let awayScore = document.querySelectorAll(`#${box.awayTeam.teamTricode}-score`)
-    for(let i = 0; i < awayScore.length; i++){
-        if(awayScore[i].innerText !== box.awayTeam.score){
-            awayScore[i].innerText = box.awayTeam.score
-        }
-    }
-    let homeScore = document.querySelectorAll(`#${box.homeTeam.teamTricode}-score`)
-    for(let i = 0; i < homeScore.length; i++){
-        if(homeScore[i].innerText !== box.homeTeam.score){
-            homeScore[i].innerText = box.homeTeam.score
-        }
-    }
-
-    let currGameInfo = document.querySelectorAll(`#${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
-    for(let i = 0; i < currGameInfo.length; i++){
-        let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
-        let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('.'))
-        let quarter = `${box.period}Q`
-        if(quarter === '5Q'){
-            quarter = 'OT'
-        }
-        let gameTime = ""
-        if(quarter === `0Q`){
-            gameTime = 'Pregame'
-        } 
-        else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
-            gameTime = 'Final'
-        }
-        else if(minutes === '00' && seconds === '00'){
-            gameTime = `End of ${quarter}`
-        }
-        else{
-            if(quarter === '5Q'){
-                quarter = 'OT'
+    if(box){
+        let awayScore = document.querySelectorAll(`#${box.awayTeam.teamTricode}-score`)
+        for(let i = 0; i < awayScore.length; i++){
+            if(awayScore[i].innerText !== box.awayTeam.score){
+                awayScore[i].innerText = box.awayTeam.score
             }
-            gameTime = `${quarter} ${minutes}:${seconds}`
+        }
+        let homeScore = document.querySelectorAll(`#${box.homeTeam.teamTricode}-score`)
+        for(let i = 0; i < homeScore.length; i++){
+            if(homeScore[i].innerText !== box.homeTeam.score){
+                homeScore[i].innerText = box.homeTeam.score
+            }
         }
 
-        if(currGameInfo[i].innerText !== gameTime){
-            currGameInfo[i].innerText = gameTime
+        let currGameInfo = document.querySelectorAll(`#${box.awayTeam.teamTricode}-${box.homeTeam.teamTricode}-time`)
+        for(let i = 0; i < currGameInfo.length; i++){
+            let gameTime = ""
+            if(box.gameClock === ""){
+                gameTime = 'Final'
+            }
+            else{
+                let minutes = box.gameClock.substring(box.gameClock.indexOf('T')+1, box.gameClock.lastIndexOf('M'))
+                let seconds = box.gameClock.substring(box.gameClock.indexOf('M')+1, box.gameClock.lastIndexOf('.'))
+                let quarter = `${box.period}Q`
+                if(quarter === '5Q'){
+                    quarter = 'OT'
+                }
+                
+                if(quarter === `0Q`){
+                    gameTime = 'Pregame'
+                } 
+                else if(quarter === '4Q' && minutes === '00' && seconds === '00'){
+                    gameTime = 'Final'
+                }
+                else if(minutes === '00' && seconds === '00'){
+                    gameTime = `End of ${quarter}`
+                }
+                else{
+                    if(quarter === '5Q'){
+                        quarter = 'OT'
+                    }
+                    gameTime = `${quarter} ${minutes}:${seconds}`
+                }
+            }
+
+            if(currGameInfo[i].innerText !== gameTime){
+                currGameInfo[i].innerText = gameTime
+            }
         }
     }
 }
@@ -105,9 +134,39 @@ function updatePlayers(box, players){
                 if(players[i].name === bets[b][j].name && bets[b][j].gameStatus !== 'Final'){
                     if(box.gameStatusText !== 'pregame' && bets[b][j].gameStatus === 'pregame'){
                         bets[b][j].gameStatus = 'Started'
+                        let betCount = Object.keys(bets[b][j].bets)
+                        for(let k = 0; k < betCount.length; k++){
+                            let liveStat = 0
+                            if(betCount[k] === 'PRA'){
+                                liveStat = players[i].statistics.points + players[i].statistics.reboundsTotal + players[i].statistics.assists
+                            }
+                            else{
+                                liveStat = players[i].statistics[betCount[k]]
+                            }
+                            if(liveStat !== bets[b][j].bets[betCount[k]].curr){
+                                let id = `${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-live-${b}`
+                                updateBet(id, liveStat)
+                                bets[b][j].bets[betCount[k]].curr = liveStat
+                            }
+                        }
                     }
                     else if ((box.gameStatusText === 'Final' || box.gameStatusText === 'Final/OT') && bets[b][j].gameStatus !== 'Final'){
                         bets[b][j].gameStatus = 'Final'
+                        let betCount = Object.keys(bets[b][j].bets)
+                        for(let k = 0; k < betCount.length; k++){
+                            let liveStat = 0
+                            if(betCount[k] === 'PRA'){
+                                liveStat = players[i].statistics.points + players[i].statistics.reboundsTotal + players[i].statistics.assists
+                            }
+                            else{
+                                liveStat = players[i].statistics[betCount[k]]
+                            }
+                            if(liveStat !== bets[b][j].bets[betCount[k]].curr){
+                                let id = `${bets[b][j].name.replace(" ", "-")}-${betCount[k]}-live-${b}`
+                                updateBet(id, liveStat)
+                                bets[b][j].bets[betCount[k]].curr = liveStat
+                            }
+                        }
                     }
                     else if (bets[b][j].gameStatus !== 'pregame'){
                         let betCount = Object.keys(bets[b][j].bets)
@@ -141,19 +200,35 @@ async function createBets(bet){
     let matchups = []
     //get all matchup
     for(let i = 0; i < games.length; i++){
-        let nextMatchup = {
-            matchup : `${games[i].awayTeam.teamTricode} vs ${games[i].homeTeam.teamTricode}`,
-            players: [],
-            awayTeam : `${games[i].awayTeam.teamTricode}`,
-            homeTeam : `${games[i].homeTeam.teamTricode}`,
-            awayScore : `${games[i].awayTeam.score}`,
-            homeScore : `${games[i].homeTeam.score}`,
-            quarter: `${games[i].period}`,
-            gameClock: `${games[i].gameClock}`
+        if(games[i]){
+            let nextMatchup = {
+                matchup : `${games[i].awayTeam.teamTricode} vs ${games[i].homeTeam.teamTricode}`,
+                players: [],
+                awayTeam : `${games[i].awayTeam.teamTricode}`,
+                homeTeam : `${games[i].homeTeam.teamTricode}`,
+                awayScore : `${games[i].awayTeam.score}`,
+                homeScore : `${games[i].homeTeam.score}`,
+                quarter: `${games[i].period}`,
+                gameClock: `${games[i].gameClock}`
+            }
+            matchups.push(nextMatchup)
         }
-        matchups.push(nextMatchup)
     }
-
+    for(let i = 0; i < finishedGames.length; i++){
+        if(finishedGames[i]){
+            let nextMatchup = {
+                matchup : `${finishedGames[i].awayTeam.teamTricode} vs ${finishedGames[i].homeTeam.teamTricode}`,
+                players: [],
+                awayTeam : `${finishedGames[i].awayTeam.teamTricode}`,
+                homeTeam : `${finishedGames[i].homeTeam.teamTricode}`,
+                awayScore : `${finishedGames[i].awayTeam.score}`,
+                homeScore : `${finishedGames[i].homeTeam.score}`,
+                quarter: `${finishedGames[i].period}`,
+                gameClock: `${finishedGames[i].gameClock}`
+            }
+        matchups.push(nextMatchup)
+        }
+    }
     //get all players in the same games from bet
     for(let i = 0; i < bet.length; i++){
         function printResp(response){
@@ -396,11 +471,10 @@ let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml) 
 
 //default behaviour
-//10 secs
 function printAxios(response){
     console.log(response)
 }
 
 axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
 
-setInterval(getRealStats, 2000)
+setInterval(getRealStats, 1000)

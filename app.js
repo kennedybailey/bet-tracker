@@ -473,6 +473,7 @@ function addBetToHtml(){
     document.querySelector('#betContainer').innerHTML = defaultLegs
     document.getElementById("addLeg").addEventListener("click", addLegForm)
     document.getElementById("addBet").addEventListener("click", addBetToHtml)
+    autocomplete(document.getElementById("player-name-0"), allPlayers)
     createBets(bet)
     
 }

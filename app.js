@@ -479,6 +479,12 @@ function addBetToHtml(){
 let addBet = document.getElementById("addBet")
 addBet.addEventListener("click", addBetToHtml) 
 
+function removeBets(){
+    document.getElementById("allBetsContainer").innerHTML = ""
+    bets = []
+}
+let resetBtn = document.getElementById("bet-reset-all-button")
+resetBtn.addEventListener("click", removeBets) 
 //default behaviour
 function printAxios(response){
     console.log(response)

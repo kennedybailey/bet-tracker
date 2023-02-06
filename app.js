@@ -10,14 +10,14 @@ let statConversion = {
 }
 let liveGameValues = []
 let allPlayers = []
-async function getBaseStats(){
-    await axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){
+function getBaseStats(){
+    axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){
         let allPlayersBase = response.data.league.standard
         for(let i = 0; i < allPlayersBase.length; i++){
             allPlayers.push(allPlayersBase[i].firstName+" "+allPlayersBase[i].lastName)
         }
     })
-    await axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
+    axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
 }
 //Functions
 function getRealStats(){
@@ -35,7 +35,7 @@ function getRealStats(){
 
 async function logScoreboard(response){
     games = response.data.scoreboard.games
-    console.log('Games Today:')
+    console.log('Games Today ('+response.data.scoreboard.gameDate+'):')
     for(let i = 0; i < games.length; i++){
         if(games[i]){
             console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
@@ -506,27 +506,27 @@ function autocomplete(inp, arr) {
         /*for each item in the array...*/
         for (i = 0; i < arr.length; i++) {
           /*check if the item starts with the same letters as the text field value:*/
-          if (arr[i].toUpperCase().includes(val.toUpperCase())) {
-            /*create a DIV element for each matching element:*/
-            b = document.createElement("DIV");
-            /*make the matching letters bold:*/
-            if(arr[i].indexOf(val) !== -1){
-                b.innerHTML = arr[i].substr(0, arr[i].indexOf(val))
-                b.innerHTML += "<strong>" + arr[i].substr(arr[i].indexOf(val), val.length) + "</strong>";
-                b.innerHTML += arr[i].substr(arr[i].indexOf(val)+val.length);
-                /*insert a input field that will hold the current array item's value:*/
-                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                /*execute a function when someone clicks on the item value (DIV element):*/
+            if (arr[i].toUpperCase().includes(val.toUpperCase())) {
+                /*create a DIV element for each matching element:*/
+                b = document.createElement("DIV");
+                /*make the matching letters bold:*/
+                if(arr[i].toUpperCase().indexOf(val.toUpperCase()) !== -1){
+                    b.innerHTML = arr[i].substr(0, arr[i].toUpperCase().indexOf(val.toUpperCase()))
+                    b.innerHTML += "<strong>" + arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase()), val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase())+val.length);
+                    /*insert a input field that will hold the current array item's value:*/
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
-                    /*insert the value for the autocomplete text field:*/
-                    inp.value = this.getElementsByTagName("input")[0].value;
-                    /*close the list of autocompleted values,
-                    (or any other open lists of autocompleted values:*/
-                    closeAllLists();
-                });
-                a.appendChild(b);
+                        /*insert the value for the autocomplete text field:*/
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        /*close the list of autocompleted values,
+                        (or any other open lists of autocompleted values:*/
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
             }
-          }
         }
     });
     /*execute a function presses a key on the keyboard:*/
@@ -555,36 +555,36 @@ function autocomplete(inp, arr) {
         }
     });
     function addActive(x) {
-      /*a function to classify an item as "active":*/
-      if (!x) return false;
-      /*start by removing the "active" class on all items:*/
-      removeActive(x);
-      if (currentFocus >= x.length) currentFocus = 0;
-      if (currentFocus < 0) currentFocus = (x.length - 1);
-      /*add class "autocomplete-active":*/
-      x[currentFocus].classList.add("autocomplete-active");
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
     }
     function removeActive(x) {
-      /*a function to remove the "active" class from all autocomplete items:*/
-      for (var i = 0; i < x.length; i++) {
-        x[i].classList.remove("autocomplete-active");
-      }
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+        }
     }
     function closeAllLists(elmnt) {
-      /*close all autocomplete lists in the document,
-      except the one passed as an argument:*/
-      var x = document.getElementsByClassName("autocomplete-items");
-      for (var i = 0; i < x.length; i++) {
-        if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
+        /*close all autocomplete lists in the document,
+        except the one passed as an argument:*/
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+            x[i].parentNode.removeChild(x[i]);
+        }
     }
   }
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
       closeAllLists(e.target);
   });
-  }
+}
 
 /*END OF AUTO COMPLETE*/
 getBaseStats()

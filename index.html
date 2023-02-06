@@ -27,6 +27,10 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;900&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://kit.fontawesome.com/51384c76b7.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg">
@@ -57,7 +61,7 @@
 
     <div class="row betContainerStyle">
       <div class="col-md-4">
-        <div class="col-md-7"><p class="homeTitles">CREATE A BET</p></div>
+        <div class="col-md-6"><p class="homeTitles">CREATE A BET</p></div>
         <div class="container-md infoBox" id="betContainer">
           <div id="legContainer">
             <div id="leg-0">
@@ -192,9 +196,18 @@
         </div>
       </div>
       <div class="col-md-3">
-        <div class="col-md-6"><p class="homeTitles">MY BETS</p></div>
-        <div class="container-md infoBox" id="allBetsContainer">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="homeTitles">MY BETS</p>
+          </div>
+          <div class="col-md-6 betResetAllButton">
+            <button id="bet-reset-all-button">
+              <span class="resetWords">Reset All</span>
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
         </div>
+        <div class="container-md infoBox" id="allBetsContainer"></div>
       </div>
     </div>
     <footer>Created by Julian & Kennedy</footer>

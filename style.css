@@ -25,8 +25,8 @@ body {
   font-family: "bolden", Arial, sans-serif;
   font-size: 45px;
 }
-.navbarInfo:hover{
-  color: var(--primaryColor)
+.navbarInfo:hover {
+  color: var(--primaryColor);
 }
 .betColor {
   color: var(--text-color);
@@ -131,6 +131,40 @@ body {
 .whichBet {
   color: var(--primaryColor);
   font-weight: 600;
+}
+
+.betResetAllButton {
+  position: relative;
+}
+
+#bet-reset-all-button {
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  margin-right: 13px;
+  margin-bottom: 10px;
+  border: 1px solid #881d1d;
+  border-radius: 10px;
+  background-color: transparent;
+  color: #881d1d;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072);
+  font-size: 10px;
+  transition: 0.2s transform ease-in-out;
+  will-change: transform;
+}
+
+.resetWords {
+  color: var(--text-color);
+  font-family: var(--basic-text-font);
+}
+
+#bet-reset-all-button:hover {
+  cursor: pointer;
+  border: 2px solid #881d1d;
+  transform: scale(1.05);
+  will-change: transform;
 }
 
 .gameBox {

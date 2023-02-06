@@ -18,7 +18,6 @@ async function getBaseStats(){
         }
     })
     await axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
-    console.log(allPlayers)
 }
 //Functions
 function getRealStats(){

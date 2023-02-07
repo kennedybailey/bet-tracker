@@ -52,16 +52,35 @@ body {
   border-top: 3px solid var(--primaryColor);
 }
 
+.sport {
+  margin-top: 12.5px;
+  margin-left: 12px;
+}
+
+.todaysGameInfo {
+  border-left: 0.5px solid var(--form-color);
+  border-right: 0.5px solid var(--form-color);
+}
+
+.todaysGameTime {
+  margin-bottom: 0;
+}
+
 .todaysGames,
 .todaysGamesSportSelect {
   background-color: var(--text-color);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
+  text-align: center;
 }
 
 .todaysGamesSportSelect {
   border: 1px solid var(--form-color);
   border-radius: 20px;
+}
+
+.todaysGameLogo {
+  padding: 0;
 }
 
 /* Any titles on the home page outside of the Navbar*/

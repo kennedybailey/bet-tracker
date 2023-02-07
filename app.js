@@ -11,7 +11,7 @@ let statConversion = {
 let liveGameValues = []
 let allPlayers = []
 //SET UP SAVING BETS
-//if(localStorage.getItem("name") === "John"){console.log("cookie set"); localStorage.removeItem("name")} else{console.log("cookie not set"); localStorage.setItem("name", "John")}
+if(localStorage.getItem("name") === "John"){console.log("cookie set"); localStorage.removeItem("name")} else{console.log("cookie not set"); localStorage.setItem("name", "John")}
 
 function getBaseStats(){
     axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){

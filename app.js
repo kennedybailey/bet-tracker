@@ -1,4 +1,4 @@
-bets = []
+let bets = []
 let games = {}
 let finishedGames = []
 let statConversion = {
@@ -37,6 +37,68 @@ async function logScoreboard(response){
     games = response.data.scoreboard.games
     console.log('Games Today ('+response.data.scoreboard.gameDate+'):')
     for(let i = 0; i < games.length; i++){
+        let gameRow = document.createElement("div")
+        gameRow.className = "col-md-1 todaysGameInfo"
+        let timeRow = document.createElement("div")
+        timeRow.className = "row"
+        let pTime = document.createElement("p")
+        pTime.className = "todaysGameTime"
+        let localTime = new Date(games[i].gameTimeUTC)
+        let hrs = localTime.getHours()
+        let amPm = ""
+        if(hrs/12 >= 1){
+            amPm = "PM"
+        } else{
+            amPm = "AM"
+        }
+        let min = localTime.getMinutes()
+        if(min === 0){
+            min = "00"
+        }
+        pTime.innerText = `${hrs%12}:${min} ${amPm}`
+        timeRow.appendChild(pTime)
+        gameRow.appendChild(timeRow)
+
+        let logoURL = 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/scoreboard/'
+        let teamsRow = document.createElement("div")
+        teamsRow.className = "row"
+        let logos = document.createElement("div")
+        logos.className = "col-md-12 todaysGameLogo"
+        let awayDiv = document.createElement("div")
+        let awayImg = document.createElement("img")
+        let awayTriCode = games[i].awayTeam.teamTricode
+        if(awayTriCode === "UTA"){
+            awayTriCode = "utah"
+        }
+        awayImg.src=logoURL+awayTriCode+'.png'
+        awayImg.width = "20"
+        awayImg.height = "20"
+        let awayName = document.createElement("span")
+        awayName.innerText = " "+games[i].awayTeam.teamTricode
+
+        let homeDiv = document.createElement("div")
+        let homeImg = document.createElement("img")
+        let homeTriCode = games[i].homeTeam.teamTricode
+        if(homeTriCode === "UTA"){
+            homeTriCode = "utah"
+        }
+        homeImg.src=logoURL+homeTriCode+'.png'
+        homeImg.width = "20"
+        homeImg.height = "20"
+        let homeName = document.createElement("span")
+        homeName.innerText = " "+games[i].homeTeam.teamTricode
+        
+        awayDiv.appendChild(awayImg)
+        awayDiv.appendChild(awayName)
+        homeDiv.appendChild(homeImg)
+        homeDiv.appendChild(homeName)
+        logos.appendChild(awayDiv)
+        logos.appendChild(homeDiv)
+        teamsRow.appendChild(logos)
+        gameRow.appendChild(teamsRow)
+        document.getElementById("gameContainer").appendChild(gameRow)  
+    }
+    for(let i = 0; i < games.length; i++){
         if(games[i]){
             console.log(`${games[i].gameId}: ${games[i].awayTeam.teamName} at ${games[i].homeTeam.teamName}`)
             if(games[i].gameStatusText === 'PPD'){
@@ -53,6 +115,7 @@ async function logScoreboard(response){
                 games.splice(i, 1)
                 i--
             }
+
         }
     }
     getRealStats()

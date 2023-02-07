@@ -50,6 +50,7 @@ body {
 /*Todays Games Bar*/
 .todaysGames {
   border-top: 3px solid var(--primaryColor);
+  border-bottom: 3px solid var(--primaryColor);
 }
 
 .sport {
@@ -81,6 +82,7 @@ body {
 
 .todaysGameLogo {
   padding: 0;
+  font-weight: bold;
 }
 
 /* Any titles on the home page outside of the Navbar*/

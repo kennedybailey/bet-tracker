@@ -10,6 +10,9 @@ let statConversion = {
 }
 let liveGameValues = []
 let allPlayers = []
+//SET UP SAVING BETS
+//if(localStorage.getItem("name") === "John"){console.log("cookie set"); localStorage.removeItem("name")} else{console.log("cookie not set"); localStorage.setItem("name", "John")}
+
 function getBaseStats(){
     axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){
         let allPlayersBase = response.data.league.standard
@@ -69,6 +72,8 @@ async function logScoreboard(response){
         let awayTriCode = games[i].awayTeam.teamTricode
         if(awayTriCode === "UTA"){
             awayTriCode = "utah"
+        } else if(awayTriCode === "NOP"){
+            awayTriCode = "NO"
         }
         awayImg.src=logoURL+awayTriCode+'.png'
         awayImg.width = "20"
@@ -81,6 +86,8 @@ async function logScoreboard(response){
         let homeTriCode = games[i].homeTeam.teamTricode
         if(homeTriCode === "UTA"){
             homeTriCode = "utah"
+        } else if(homeTriCode === "NOP"){
+            homeTriCode = "NO"
         }
         homeImg.src=logoURL+homeTriCode+'.png'
         homeImg.width = "20"

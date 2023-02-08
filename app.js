@@ -11,16 +11,16 @@ let statConversion = {
 let liveGameValues = []
 let allPlayers = []
 //SET UP SAVING BETS
-//if(localStorage.getItem("name") === "John"){console.log("cookie set"); localStorage.removeItem("name")} else{console.log("cookie not set"); localStorage.setItem("name", "John")}
+//localStorage.removeItem("bets")
 
-function getBaseStats(){
-    axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){
+async function getBaseStats(){
+    await axios.get(`https://api.codetabs.com/v1/proxy?quest=https://data.nba.net/prod/v1/2022/players.json`).then(function(response){
         let allPlayersBase = response.data.league.standard
         for(let i = 0; i < allPlayersBase.length; i++){
             allPlayers.push(allPlayersBase[i].firstName+" "+allPlayersBase[i].lastName)
         }
     })
-    axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
+    await axios.get('https://api.codetabs.com/v1/proxy?quest=https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json').then(logScoreboard)
 }
 //Functions
 function getRealStats(){
@@ -125,7 +125,14 @@ async function logScoreboard(response){
 
         }
     }
-    getRealStats()
+    if(localStorage.getItem("bets") && JSON.parse(localStorage.getItem("bets")).length !== 0){
+        bets = JSON.parse(localStorage.getItem("bets"))
+        for(let i = 0; i < bets.length; i++){
+            createBets(bets[i]) 
+        }
+        
+    }
+    setInterval(getRealStats, 5000)
 }
 
 function updateStats(response){
@@ -321,7 +328,6 @@ async function createBets(bet){
         }
         await axios.get(`https://free-nba.p.rapidapi.com/players?rapidapi-key=5355dbcf79mshac6127161f06bd2p1fa345jsn668a554b624f&per_page=500&search=${bet[i].name}`).then(printResp)
     }
-
     let container = document.getElementById("allBetsContainer")
     //create div container for bet
     let betNum = container.querySelectorAll(':scope > div').length
@@ -539,6 +545,7 @@ function addBetToHtml(){
         bet.push(json)
     }
     bets.push(bet)
+    localStorage.setItem("bets", JSON.stringify(bets))
     document.querySelector('#betContainer').innerHTML = defaultLegs
     document.getElementById("addLeg").addEventListener("click", addLegForm)
     document.getElementById("addBet").addEventListener("click", addBetToHtml)
@@ -552,6 +559,7 @@ addBet.addEventListener("click", addBetToHtml)
 function removeBets(){
     document.getElementById("allBetsContainer").innerHTML = ""
     bets = []
+    localStorage.removeItem("bets")
 }
 let resetBtn = document.getElementById("bet-reset-all-button")
 resetBtn.addEventListener("click", removeBets) 
@@ -591,7 +599,10 @@ function autocomplete(inp, arr) {
                     b.innerHTML += "<strong>" + arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase()), val.length) + "</strong>";
                     b.innerHTML += arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase())+val.length);
                     /*insert a input field that will hold the current array item's value:*/
-                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    let input = document.createElement("input")
+                    input.type = "hidden"
+                    input.value = arr[i]
+                    b.appendChild(input)
                     /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
                         /*insert the value for the autocomplete text field:*/
@@ -664,4 +675,3 @@ function autocomplete(inp, arr) {
 
 /*END OF AUTO COMPLETE*/
 getBaseStats()
-setInterval(getRealStats, 1000)
